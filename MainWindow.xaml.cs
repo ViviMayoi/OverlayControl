@@ -2,19 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OverlayControl
 {
@@ -24,7 +15,7 @@ namespace OverlayControl
     public partial class MainWindow : Window, IComponentConnector
     {
         public static bool IsClosing = false;
-        public static List<string> Characters = new List<string>()
+        public static List<string> CharacterList = new List<string>()
     {
       "Akiha Tohno",
       "Akiha Vermillion",
@@ -58,6 +49,8 @@ namespace OverlayControl
       "Wallachia",
       "White Len"
     };
+
+        public static string[] CharacterArray = new string[0x64];
 
         public Dictionary<string, string> Shorthands = new Dictionary<string, string>()
     {
@@ -187,6 +180,7 @@ namespace OverlayControl
       }
     };
 
+
         public static List<string> Moons = new List<string>()
         {
       "Crescent",
@@ -197,6 +191,9 @@ namespace OverlayControl
         public Match CurrentMatch;
         private CharacterCutIn CutIn1 = new CharacterCutIn(new BitmapImage(new Uri("cutins/Sion Eltnam Atlasia.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Crescent.png", UriKind.Relative)));
         private CharacterCutIn CutIn2 = new CharacterCutIn(new BitmapImage(new Uri("cutins/Sion Tatari.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Crescent.png", UriKind.Relative)));
+        private MeltyHook.MeltyBlood hook = new MeltyHook.MeltyBlood();
+        private bool isLooping = false;
+
 
         public string Player1
         {
@@ -229,12 +226,47 @@ namespace OverlayControl
         public MainWindow()
         {
             this.InitializeComponent();
-            this.cmbChar1.ItemsSource = (IEnumerable)MainWindow.Characters;
-            this.cmbChar2.ItemsSource = (IEnumerable)MainWindow.Characters;
+            this.cmbChar1.ItemsSource = (IEnumerable)MainWindow.CharacterList;
+            this.cmbChar2.ItemsSource = (IEnumerable)MainWindow.CharacterList;
             this.cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.CutIn1.Title = "Player 1 Cut-In";
             this.CutIn2.Title = "Player 2 Cut-In";
+
+            #region Filling the CharacterArray
+            CharacterArray[0x00] = "Sion Eltnam Atlasia";
+            CharacterArray[0x01] = "Arcueid Brunestud";
+            CharacterArray[0x02] = "Ciel";
+            CharacterArray[0x03] = "Akiha Tohno";
+            CharacterArray[0x04] = "Hisui & Kohaku";
+            CharacterArray[0x05] = "Hisui";
+            CharacterArray[0x06] = "Kohaku";
+            CharacterArray[0x07] = "Shiki Tohno";
+            CharacterArray[0x08] = "Miyako Arima";
+            CharacterArray[0x09] = "Wallachia";
+            CharacterArray[0x0A] = "Nrvnqsr Chaos";
+            CharacterArray[0x0B] = "Sion Tatari";
+            CharacterArray[0x0C] = "Red Arcueid";
+            CharacterArray[0x0D] = "Akiha Vermillion";
+            CharacterArray[0x0E] = "Mech-Hisui";
+            CharacterArray[0x0F] = "Shiki Nanaya";
+            CharacterArray[0x11] = "Satsuki Yumizuka";
+            CharacterArray[0x12] = "Len";
+            CharacterArray[0x13] = "Powered Ciel";
+            CharacterArray[0x14] = "Neco-Arc";
+            CharacterArray[0x16] = "Aoko Aozaki";
+            CharacterArray[0x17] = "White Len";
+            CharacterArray[0x19] = "Neco-Arc Chaos";
+            CharacterArray[0x1C] = "Kouma Kishima";
+            CharacterArray[0x1D] = "Seifuku Akiha";
+            CharacterArray[0x1E] = "Riesbyfe Stridberg";
+            CharacterArray[0x1F] = "Michael Roa Valdamjong";
+            CharacterArray[0x21] = "Shiki Ryougi";
+            CharacterArray[0x22] = "Neco & Mech";
+            CharacterArray[0x23] = "Koha & Mech";
+            CharacterArray[0x33] = "Archetype-Earth";
+            CharacterArray[0x63] = "";
+            #endregion
         }
 
         private void btnSwap_Click(object sender, RoutedEventArgs e)
@@ -264,40 +296,99 @@ namespace OverlayControl
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
             if (this.cmbChar1.Text != "")
                 this.CutIn1.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)));
-            if (!(this.cmbChar2.Text != ""))
-                return;
-            this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
+            if (this.cmbChar2.Text != "")
+                this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
         }
 
         private void btnUpdateStreamed_Click(object sender, RoutedEventArgs e)
         {
-            if (this.CurrentMatch == null)
-                this.CurrentMatch = new Match(this.Player1, this.Player2, this.Character1, this.Character2, this.Round, this.Tournament);
-            else if (this.CurrentMatch != null && !this.CurrentMatch.IsNewMatch(this.Player1, this.Player2))
-            {
-                if (this.CurrentMatch.Player1 == this.Player1)
+            if (!isLooping)
+              {
+                isLooping = true;
+                Task.Factory.StartNew(() =>
                 {
-                    if (!this.CurrentMatch.Characters1.Contains(this.Character1))
-                        this.CurrentMatch.Characters1.Add(this.Character1);
-                    if (this.CurrentMatch.Characters2.Contains(this.Character2))
-                        return;
-                    this.CurrentMatch.Characters2.Add(this.Character2);
-                }
-                else
+                    while (isLooping)
+                    {
+                        // Verify if Melty is there 
+                        if (!hook.SearchForMelty())
+                            hook.GetMB();
+
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                });
+
+                Task.Factory.StartNew(() =>
                 {
-                    if (!this.CurrentMatch.Characters1.Contains(this.Character2))
-                        this.CurrentMatch.Characters1.Add(this.Character2);
-                    if (this.CurrentMatch.Characters2.Contains(this.Character1))
-                        return;
-                    this.CurrentMatch.Characters2.Add(this.Character1);
-                }
-            }
-            else
-            {
-                File.AppendAllText("./" + this.CurrentMatch.Tournament + ".txt", this.CurrentMatch.ToString());
-                this.CurrentMatch = new Match(this.Player1, this.Player2, this.Character1, this.Character2, this.Round, this.Tournament);
+                    while (isLooping)
+                    {
+
+                        if (hook.SearchForMelty())
+                        {
+                            string char1 = CharacterArray[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
+                            string char2 = CharacterArray[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
+                            string moon1 = Moons[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P1_MOON_SELECTOR_ADDR, 1)[0]];
+                            string moon2 = Moons[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P2_MOON_SELECTOR_ADDR, 1)[0]];
+
+                            if (char1 != null && char1.Length > 1)
+                            {
+                                this.Dispatcher.Invoke(() => cmbChar1.Text = char1);
+                            }
+
+                            if (char2 != null && char2.Length > 1)
+                            {
+                                this.Dispatcher.Invoke(() => cmbChar2.Text = char2);
+                            }
+
+                            if (moon1 != null && moon1.Length > 1)
+                            {
+                                this.Dispatcher.Invoke(() => cmbMoon1.Text = moon1);
+                            }
+
+                            if (moon2 != null && moon2.Length > 1)
+                            {
+                                this.Dispatcher.Invoke(() => cmbMoon2.Text = moon2);
+                            }
+
+                            this.Dispatcher.Invoke(() => UpdateCutIns());
+                        }
+
+                        System.Threading.Thread.Sleep(16);
+                    }
+                });
+
+
             }
         }
+
+        //private void btnUpdateStreamed_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (this.CurrentMatch == null)
+        //        this.CurrentMatch = new Match(this.Player1, this.Player2, this.Character1, this.Character2, this.Round, this.Tournament);
+        //    else if (this.CurrentMatch != null && !this.CurrentMatch.IsNewMatch(this.Player1, this.Player2))
+        //    {
+        //        if (this.CurrentMatch.Player1 == this.Player1)
+        //        {
+        //            if (!this.CurrentMatch.Characters1.Contains(this.Character1))
+        //                this.CurrentMatch.Characters1.Add(this.Character1);
+        //            if (this.CurrentMatch.Characters2.Contains(this.Character2))
+        //                return;
+        //            this.CurrentMatch.Characters2.Add(this.Character2);
+        //        }
+        //        else
+        //        {
+        //            if (!this.CurrentMatch.Characters1.Contains(this.Character2))
+        //                this.CurrentMatch.Characters1.Add(this.Character2);
+        //            if (this.CurrentMatch.Characters2.Contains(this.Character1))
+        //                return;
+        //            this.CurrentMatch.Characters2.Add(this.Character1);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        File.AppendAllText("./" + this.CurrentMatch.Tournament + ".txt", this.CurrentMatch.ToString());
+        //        this.CurrentMatch = new Match(this.Player1, this.Player2, this.Character1, this.Character2, this.Round, this.Tournament);
+        //    }
+        //}
 
         private void BtnImage1_Click(object sender, RoutedEventArgs e)
         {
@@ -322,6 +413,15 @@ namespace OverlayControl
             MainWindow.IsClosing = true;
             this.CutIn1.Close();
             this.CutIn2.Close();
+
+        }
+
+        private void UpdateCutIns()
+        {
+            if (this.cmbChar1.Text != "")
+                this.CutIn1.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)));
+            if (this.cmbChar2.Text != "")
+                this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
         }
     }
 }
