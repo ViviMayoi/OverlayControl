@@ -299,7 +299,7 @@ namespace OverlayControl
             UpdateCutIns();
         }
 
-        private void btnUpdateStreamed_Click(object sender, RoutedEventArgs e)
+        private void btnSyncToMelty_Click(object sender, RoutedEventArgs e)
         {
             if (!isLooping)
             {
