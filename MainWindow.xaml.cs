@@ -306,11 +306,16 @@ namespace OverlayControl
             UpdateCutIns();
         }
 
-        private void btnSyncToMelty_Click(object sender, RoutedEventArgs e)
+        private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
         {
+            
             isLooping = !isLooping;
             if (isLooping)
             {
+                // Update button description
+                btnHookToMelty.Content = "Unhook from MBAACC";
+                btnHookToMelty.FontSize = 11;
+
                 Task.Factory.StartNew(() =>
                 {
                     while (isLooping)
@@ -410,7 +415,15 @@ namespace OverlayControl
 
 
             }
-                
+
+            else
+            {
+                // Update button description
+                btnHookToMelty.FontSize = 12; 
+                btnHookToMelty.Content = "Hook to MBAACC";
+            }
+
+
         }
 
         private void BtnImage1_Click(object sender, RoutedEventArgs e)
