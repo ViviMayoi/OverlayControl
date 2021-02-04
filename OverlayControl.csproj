@@ -184,6 +184,8 @@
     <Content Include="cutins\Nrvnqsr Chaos.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="moons\_null.png" />
+    <Resource Include="cutins\_null.png" />
     <Content Include="cutins\Powered Ciel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

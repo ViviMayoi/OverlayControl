@@ -17,6 +17,7 @@ namespace OverlayControl
         public static bool IsClosing = false;
         public static List<string> CharacterList = new List<string>()
     {
+      "_null",
       "Akiha Tohno",
       "Akiha Vermillion",
       "Aoko Aozaki",
@@ -185,12 +186,13 @@ namespace OverlayControl
         {
       "Crescent",
       "Full",
-      "Half"
+      "Half",
+      "_null"
     };
 
         public Match CurrentMatch;
-        private CharacterCutIn CutIn1 = new CharacterCutIn(new BitmapImage(new Uri("cutins/Sion Eltnam Atlasia.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Crescent.png", UriKind.Relative)));
-        private CharacterCutIn CutIn2 = new CharacterCutIn(new BitmapImage(new Uri("cutins/Sion Tatari.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Crescent.png", UriKind.Relative)));
+        private CharacterCutIn CutIn1 = new CharacterCutIn(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)));
+        private CharacterCutIn CutIn2 = new CharacterCutIn(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)));
         private MeltyHook.MeltyBlood hook = new MeltyHook.MeltyBlood();
         private bool isLooping = false;
 
@@ -265,7 +267,7 @@ namespace OverlayControl
             CharacterArray[0x22] = "Neco & Mech";
             CharacterArray[0x23] = "Koha & Mech";
             CharacterArray[0x33] = "Archetype-Earth";
-            CharacterArray[0x63] = "";
+            CharacterArray[0x63] = "_null";
             #endregion
         }
 
@@ -294,16 +296,13 @@ namespace OverlayControl
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
             File.WriteAllText("./round.txt", this.txtRound.Text);
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
-            if (this.cmbChar1.Text != "")
-                this.CutIn1.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)));
-            if (this.cmbChar2.Text != "")
-                this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
+            UpdateCutIns();
         }
 
         private void btnUpdateStreamed_Click(object sender, RoutedEventArgs e)
         {
             if (!isLooping)
-              {
+            {
                 isLooping = true;
                 Task.Factory.StartNew(() =>
                 {
@@ -313,41 +312,52 @@ namespace OverlayControl
                         if (!hook.SearchForMelty())
                             hook.GetMB();
 
+                        if (!hook.SearchForMelty())
+                        {
+                            this.Dispatcher.Invoke(() => cmbChar1.Text = "_null");
+                            this.Dispatcher.Invoke(() => cmbChar2.Text = "_null");
+                            this.Dispatcher.Invoke(() => cmbMoon1.Text = "_null");
+                            this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
+                            this.Dispatcher.Invoke(() => UpdateCutIns());
+                        }
+
                         System.Threading.Thread.Sleep(1000);
                     }
                 });
 
                 Task.Factory.StartNew(() =>
                 {
-                    while (isLooping)
-                    {
+                while (isLooping)
+                {
 
-                        if (hook.SearchForMelty())
-                        {
+                    if (hook.SearchForMelty())
+                    {
+                            bool select1 = hook.ReadMem((int)MeltyHook.MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] == 1;
+                            bool select2 = hook.ReadMem((int)MeltyHook.MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] == 1;
                             string char1 = CharacterArray[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
                             string char2 = CharacterArray[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
                             string moon1 = Moons[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P1_MOON_SELECTOR_ADDR, 1)[0]];
                             string moon2 = Moons[hook.ReadMem((int)MeltyHook.MeltyMem.CC_P2_MOON_SELECTOR_ADDR, 1)[0]];
 
                             if (char1 != null && char1.Length > 1)
-                            {
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = char1);
-                            }
+                            else
+                                this.Dispatcher.Invoke(() => cmbChar1.Text = "_null");
 
                             if (char2 != null && char2.Length > 1)
-                            {
                                 this.Dispatcher.Invoke(() => cmbChar2.Text = char2);
-                            }
+                            else
+                                this.Dispatcher.Invoke(() => cmbChar2.Text = "_null");
 
-                            if (moon1 != null && moon1.Length > 1)
-                            {
+                            if (moon1 != null && moon1.Length > 1 && select1)
                                 this.Dispatcher.Invoke(() => cmbMoon1.Text = moon1);
-                            }
+                            else
+                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "_null");
 
-                            if (moon2 != null && moon2.Length > 1)
-                            {
+                            if (moon2 != null && moon2.Length > 1 && select2)
                                 this.Dispatcher.Invoke(() => cmbMoon2.Text = moon2);
-                            }
+                            else
+                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
 
                             this.Dispatcher.Invoke(() => UpdateCutIns());
                         }
