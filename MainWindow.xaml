@@ -32,10 +32,10 @@
              VerticalAlignment="Top" Width="36" Margin="601,14,0,0"/>
         <TextBox x:Name="txtScore2" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="36" Margin="601,44,0,0"/>
-        <Button Click="btnSwap_Click" x:Name="btnSwap" Content="Swap" VerticalAlignment="Top" Margin="448,106,0,0"
-            Height="23" HorizontalAlignment="Left" Width="115"/>
+        <Button Click="btnSwap_Click" x:Name="btnSwap" Content="Swap" VerticalAlignment="Top" Margin="552,106,0,0"
+            Height="23" HorizontalAlignment="Left" Width="38"/>
         <Button Click="btnUpdate_Click" x:Name="btnUpdate" Content="Update Layout" VerticalAlignment="Top"
-            Margin="569,106,0,0" Height="23" HorizontalAlignment="Left" Width="115"/>
+            Margin="601,106,0,0" Height="23" HorizontalAlignment="Left" Width="83"/>
         <TextBox x:Name="txtCommentators" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="210" Margin="105,106,0,0"/>
         <Label x:Name="lblCommentary" Content="Commentators:" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -45,7 +45,8 @@
         <Label x:Name="lblRound" Content="Round:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="382,72,0,0" Width="50" Height="26"/>
         <Button Click="btnHookToMelty_Click" x:Name="btnHookToMelty" Content="Hook to MBAACC"
-            HorizontalAlignment="Left" VerticalAlignment="Top" Width="115" Margin="327,106,0,0" Height="23"/>
+            HorizontalAlignment="Left" VerticalAlignment="Top" Width="128" Margin="327,106,0,0" Height="23"/>
+        <Button x:Name="btnSwitchProcess" Content="Switch Process" HorizontalAlignment="Left" Height="23" Margin="460,106,0,0" VerticalAlignment="Top" Width="87" Click="btnSwitchProcess_Click"/>
         <TextBox x:Name="txtTournament" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="287" Margin="85,75,0,0"/>
         <Label x:Name="lblTournament" Content="Tournament:" HorizontalAlignment="Left" VerticalAlignment="Top"

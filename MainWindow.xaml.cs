@@ -465,5 +465,10 @@ namespace OverlayControl
             File.WriteAllText("./score1.txt", this.txtScore1.Text);
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
+
+        private bool btnSwitchProcess_Click(object sender, RoutedEventArgs e)
+        {
+            return hook.SwapActiveProcess();
+        }
     }
 }
