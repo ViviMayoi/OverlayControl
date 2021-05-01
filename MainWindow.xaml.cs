@@ -466,9 +466,9 @@ namespace OverlayControl
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
 
-        private bool btnSwitchProcess_Click(object sender, RoutedEventArgs e)
+        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
         {
-            return hook.SwapActiveProcess();
+            hook.SwapActiveProcess();
         }
     }
 }
