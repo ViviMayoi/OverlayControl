@@ -305,7 +305,7 @@ namespace OverlayControl
             File.WriteAllText("./sponsor2.txt", this.txtPlayer2.Text);
             File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
             File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
-            File.WriteAllText("./commentary.txt", this.txtCommentators.Text);
+            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
             File.WriteAllText("./round.txt", this.txtRound.Text);
             UpdateScores();
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
