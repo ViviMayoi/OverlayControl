@@ -240,6 +240,8 @@ namespace OverlayControl
             this.cmbChar2.ItemsSource = (IEnumerable)MainWindow.CharacterList;
             this.cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
+            this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
+            this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.CutIn1.Title = "Player 1 Cut-In";
             this.CutIn2.Title = "Player 2 Cut-In";
 
@@ -299,6 +301,10 @@ namespace OverlayControl
         {
             File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
             File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
+            File.WriteAllText("./sponsor1.txt", this.txtPlayer1.Text);
+            File.WriteAllText("./sponsor2.txt", this.txtPlayer2.Text);
+            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
+            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentators.Text);
             File.WriteAllText("./round.txt", this.txtRound.Text);
             UpdateScores();
@@ -308,7 +314,7 @@ namespace OverlayControl
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
         {
-            
+
             isLooping = !isLooping;
             if (isLooping)
             {
@@ -419,7 +425,7 @@ namespace OverlayControl
             else
             {
                 // Update button description
-                btnHookToMelty.FontSize = 12; 
+                btnHookToMelty.FontSize = 12;
                 btnHookToMelty.Content = "Hook to MBAACC";
             }
 
