@@ -79,7 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="charactercutin.xaml">
+    <Page Include="OverlayVisuals.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -91,8 +91,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="charactercutin.xaml.cs">
-      <DependentUpon>charactercutin.xaml</DependentUpon>
+    <Compile Include="OverlayVisuals.xaml.cs">
+      <DependentUpon>OverlayVisuals.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -224,6 +224,58 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="binaries\meltyhook.dll" />
+    <Resource Include="flags\Afghanistan.png" />
+    <Resource Include="flags\Albania.png" />
+    <Resource Include="flags\AmericanSamoa.png" />
+    <Resource Include="flags\Andorra.png" />
+    <Resource Include="flags\Angola.png" />
+    <Resource Include="flags\Anguilla.png" />
+    <Resource Include="flags\Antarctica.png" />
+    <Resource Include="flags\AntiguaAndBarbuda.png" />
+    <Resource Include="flags\Argentina.png" />
+    <Resource Include="flags\Armenia.png" />
+    <Resource Include="flags\Aruba.png" />
+    <Resource Include="flags\Australia.png" />
+    <Resource Include="flags\Austria.png" />
+    <Resource Include="flags\Azerbaijan.png" />
+    <Resource Include="flags\Bahamas.png" />
+    <Resource Include="flags\Bahrain.png" />
+    <Resource Include="flags\Bangladesh.png" />
+    <Resource Include="flags\Barbados.png" />
+    <Resource Include="flags\Belgium.png" />
+    <Resource Include="flags\Benin.png" />
+    <Resource Include="flags\Bermuda.png" />
+    <Resource Include="flags\Bhutan.png" />
+    <Resource Include="flags\Bolivia.png" />
+    <Resource Include="flags\BonaireSintEustatiusAndSaba.png" />
+    <Resource Include="flags\BosniaAndHerzegovina.png" />
+    <Resource Include="flags\Brazil.png" />
+    <Resource Include="flags\BruneiDarussalam.png" />
+    <Resource Include="flags\Bulgaria.png" />
+    <Resource Include="flags\BurkinaFaso.png" />
+    <Resource Include="flags\Burundi.png" />
+    <Resource Include="flags\Canada.png" />
+    <Resource Include="flags\CostaRica.png" />
+    <Resource Include="flags\Finland.png" />
+    <Resource Include="flags\France.png" />
+    <Resource Include="flags\Germany.png" />
+    <Resource Include="flags\Greece.png" />
+    <Resource Include="flags\Israel.png" />
+    <Resource Include="flags\Italy.png" />
+    <Resource Include="flags\Lebanon.png" />
+    <Resource Include="flags\Mexico.png" />
+    <Resource Include="flags\Norway.png" />
+    <Resource Include="flags\Panama.png" />
+    <Resource Include="flags\Poland.png" />
+    <Resource Include="flags\PuertoRico.png" />
+    <Resource Include="flags\SaintBarthélemy.png" />
+    <Resource Include="flags\SouthKorea.png" />
+    <Resource Include="flags\Sweden.png" />
+    <Resource Include="flags\Switzerland.png" />
+    <Resource Include="flags\UnitedArabEmirates.png" />
+    <Resource Include="flags\UnitedKingdom.png" />
+    <Resource Include="flags\UnitedStatesOfAmerica.png" />
+    <Resource Include="flags\ÅlandIslands.png" />
     <Content Include="moons\Crescent.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -246,5 +298,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -191,8 +191,9 @@ namespace OverlayControl
         #endregion
 
         #region Private variables
-        private readonly CharacterCutIn CutIn1 = new CharacterCutIn(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)));
-        private readonly CharacterCutIn CutIn2 = new CharacterCutIn(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)));
+        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
+            new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
+            new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood hook = new MeltyBlood();
         private bool isLooping = false;
 
@@ -242,8 +243,6 @@ namespace OverlayControl
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
-            this.CutIn1.Title = "Player 1 Cut-In";
-            this.CutIn2.Title = "Player 2 Cut-In";
 
             #region Filling the CharacterArray
             CharacterArray[0x00] = "Sion Eltnam Atlasia";
@@ -432,38 +431,39 @@ namespace OverlayControl
 
         }
 
-        private void BtnImage1_Click(object sender, RoutedEventArgs e)
+        private void BtnImage_Click(object sender, RoutedEventArgs e)
         {
             if (this.cmbChar1.Text != "")
-                this.CutIn1.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)));
-            if (this.CutIn1.IsVisible)
+                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+            if (this._visuals.IsVisible)
                 return;
-            this.CutIn1.Show();
+            this._visuals.Show();
         }
 
-        private void BtnImage2_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.cmbChar2.Text != "")
-                this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
-            if (this.CutIn2.IsVisible)
-                return;
-            this.CutIn2.Show();
-        }
+        //private void BtnImage2_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (this.cmbChar2.Text != "")
+        //        this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
+        //    if (this.CutIn2.IsVisible)
+        //        return;
+        //    this.CutIn2.Show();
+        //}
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             MainWindow.IsClosing = true;
-            this.CutIn1.Close();
-            this.CutIn2.Close();
+            this._visuals.Close();
 
         }
 
         private void UpdateCutIns()
         {
-            if (this.cmbChar1.Text != "")
-                this.CutIn1.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)));
-            if (this.cmbChar2.Text != "")
-                this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
+            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
+                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
         }
 
         private void UpdateScores()
