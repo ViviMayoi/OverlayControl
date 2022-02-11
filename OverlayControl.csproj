@@ -224,58 +224,162 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="binaries\meltyhook.dll" />
-    <Resource Include="flags\Afghanistan.png" />
-    <Resource Include="flags\Albania.png" />
-    <Resource Include="flags\AmericanSamoa.png" />
-    <Resource Include="flags\Andorra.png" />
-    <Resource Include="flags\Angola.png" />
-    <Resource Include="flags\Anguilla.png" />
-    <Resource Include="flags\Antarctica.png" />
-    <Resource Include="flags\AntiguaAndBarbuda.png" />
-    <Resource Include="flags\Argentina.png" />
-    <Resource Include="flags\Armenia.png" />
-    <Resource Include="flags\Aruba.png" />
-    <Resource Include="flags\Australia.png" />
-    <Resource Include="flags\Austria.png" />
-    <Resource Include="flags\Azerbaijan.png" />
-    <Resource Include="flags\Bahamas.png" />
-    <Resource Include="flags\Bahrain.png" />
-    <Resource Include="flags\Bangladesh.png" />
-    <Resource Include="flags\Barbados.png" />
-    <Resource Include="flags\Belgium.png" />
-    <Resource Include="flags\Benin.png" />
-    <Resource Include="flags\Bermuda.png" />
-    <Resource Include="flags\Bhutan.png" />
-    <Resource Include="flags\Bolivia.png" />
-    <Resource Include="flags\BonaireSintEustatiusAndSaba.png" />
-    <Resource Include="flags\BosniaAndHerzegovina.png" />
-    <Resource Include="flags\Brazil.png" />
-    <Resource Include="flags\BruneiDarussalam.png" />
-    <Resource Include="flags\Bulgaria.png" />
-    <Resource Include="flags\BurkinaFaso.png" />
-    <Resource Include="flags\Burundi.png" />
-    <Resource Include="flags\Canada.png" />
-    <Resource Include="flags\CostaRica.png" />
-    <Resource Include="flags\Finland.png" />
-    <Resource Include="flags\France.png" />
-    <Resource Include="flags\Germany.png" />
-    <Resource Include="flags\Greece.png" />
-    <Resource Include="flags\Israel.png" />
-    <Resource Include="flags\Italy.png" />
-    <Resource Include="flags\Lebanon.png" />
-    <Resource Include="flags\Mexico.png" />
-    <Resource Include="flags\Norway.png" />
-    <Resource Include="flags\Panama.png" />
-    <Resource Include="flags\Poland.png" />
-    <Resource Include="flags\PuertoRico.png" />
-    <Resource Include="flags\SaintBarthélemy.png" />
-    <Resource Include="flags\SouthKorea.png" />
-    <Resource Include="flags\Sweden.png" />
-    <Resource Include="flags\Switzerland.png" />
-    <Resource Include="flags\UnitedArabEmirates.png" />
-    <Resource Include="flags\UnitedKingdom.png" />
-    <Resource Include="flags\UnitedStatesOfAmerica.png" />
-    <Resource Include="flags\ÅlandIslands.png" />
+    <Content Include="flags\Afghanistan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Albania.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\AmericanSamoa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Andorra.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Angola.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Anguilla.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Antarctica.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\AntiguaAndBarbuda.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Argentina.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Armenia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Aruba.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Australia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Austria.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Azerbaijan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bahamas.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bahrain.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bangladesh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Barbados.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Belgium.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Benin.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bermuda.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bhutan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bolivia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\BonaireSintEustatiusAndSaba.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\BosniaAndHerzegovina.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Brazil.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\BruneiDarussalam.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Bulgaria.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\BurkinaFaso.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Burundi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Canada.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\CostaRica.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Finland.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\France.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Germany.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Greece.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Israel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Italy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Lebanon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Mexico.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Norway.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Panama.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Poland.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\PuertoRico.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\SaintBarthélemy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\SouthKorea.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Sweden.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\Switzerland.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\UnitedArabEmirates.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\UnitedKingdom.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\UnitedStatesOfAmerica.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="flags\ÅlandIslands.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="moons\Crescent.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
