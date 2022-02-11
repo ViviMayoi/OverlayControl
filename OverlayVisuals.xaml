@@ -9,8 +9,12 @@
     <Grid>
         <Image x:Name="imgCutIn1" Height="512" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Width="512" />
         <Image x:Name="imgCutIn2" Height="512" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Right" Width="512" />
-        <Image x:Name="imgFlag1" Height="227" Stretch="Uniform" VerticalAlignment="Top" Margin="42,512,0,0" HorizontalAlignment="Left" Width="470" />
-        <Image x:Name="imgFlag2" Height="227" Stretch="Uniform" VerticalAlignment="Top" Margin="0,512,42,0" HorizontalAlignment="Right" Width="470" />
+        <Grid Height="227" VerticalAlignment="Top" Margin="42,512,0,0" HorizontalAlignment="Left" Width="470"  >
+            <Image x:Name="imgFlag1" Stretch="Uniform" />
+        </Grid>
+        <Grid Height="227" VerticalAlignment="Top" Margin="0,512,42,0" HorizontalAlignment="Right" Width="470" >
+            <Image x:Name="imgFlag2"  Stretch="Uniform" />
+        </Grid>
         <Image x:Name="imgMoon1" HorizontalAlignment="Left" Width="42" Height="42" VerticalAlignment="Bottom"/>
         <Image x:Name="imgMoon2" HorizontalAlignment="Right" Width="42" Height="42" VerticalAlignment="Bottom"/>
     </Grid>

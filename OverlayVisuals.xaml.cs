@@ -32,9 +32,13 @@ namespace OverlayControl
                 this.imgCutIn1.Source = (ImageSource)cutIn01;
                 this.imgMoon1.Source = (ImageSource)moon01;
                 this.imgFlag1.Source = (ImageSource)flag01;
+                this.imgFlag1.Stretch = Stretch.Uniform;
+                this.imgFlag1.HorizontalAlignment = HorizontalAlignment.Center;
                 this.imgCutIn2.Source = (ImageSource)cutIn02;
                 this.imgMoon2.Source = (ImageSource)moon02;
                 this.imgFlag2.Source = (ImageSource)flag02;
+                this.imgFlag2.Stretch = Stretch.Uniform;
+                this.imgFlag2.HorizontalAlignment = HorizontalAlignment.Center;
                 return true;
             }
             catch
