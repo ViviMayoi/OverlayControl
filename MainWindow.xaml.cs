@@ -300,8 +300,8 @@ namespace OverlayControl
         {
             File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
             File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
-            File.WriteAllText("./sponsor1.txt", this.txtPlayer1.Text);
-            File.WriteAllText("./sponsor2.txt", this.txtPlayer2.Text);
+            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
+            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
             File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
             File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
