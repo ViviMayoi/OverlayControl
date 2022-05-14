@@ -194,13 +194,13 @@ namespace OverlayControl
         private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
             new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
-        private readonly MeltyBlood hook = new MeltyBlood();
-        private bool isLooping = false;
+        private readonly MeltyBlood _hook = new MeltyBlood();
+        private bool _isLooping = false;
 
-        private int scoreTotal1 = 0;
-        private int scoreTotal2 = 0;
-        private int scoreCurrent1 = 0;
-        private int scoreCurrent2 = 0;
+        private int _scoreTotal1 = 0;
+        private int _scoreTotal2 = 0;
+        private int _scoreCurrent1 = 0;
+        private int _scoreCurrent2 = 0;
         #endregion
 
         #region String properties
@@ -282,18 +282,33 @@ namespace OverlayControl
 
         private void btnSwap_Click(object sender, RoutedEventArgs e)
         {
-            object selectedItem1 = this.cmbChar1.SelectedItem;
-            this.cmbChar1.SelectedItem = this.cmbChar2.SelectedItem;
-            this.cmbChar2.SelectedItem = selectedItem1;
-            string text1 = this.txtPlayer1.Text;
+            string sponsor = this.txtSponsor1.Text;
+            this.txtSponsor1.Text = this.txtSponsor2.Text;
+            this.txtSponsor2.Text = sponsor;
+
+            string name = this.txtPlayer1.Text;
             this.txtPlayer1.Text = this.txtPlayer2.Text;
-            this.txtPlayer2.Text = text1;
-            object selectedItem2 = this.cmbMoon1.SelectedItem;
+            this.txtPlayer2.Text = name;
+
+            object selectedChar = this.cmbChar1.SelectedItem;
+            this.cmbChar1.SelectedItem = this.cmbChar2.SelectedItem;
+            this.cmbChar2.SelectedItem = selectedChar;
+
+            object selectedMoon = this.cmbMoon1.SelectedItem;
             this.cmbMoon1.SelectedItem = this.cmbMoon2.SelectedItem;
-            this.cmbMoon2.SelectedItem = selectedItem2;
-            string text2 = this.txtScore1.Text;
+            this.cmbMoon2.SelectedItem = selectedMoon;
+
+            string score = this.txtScore1.Text;
             this.txtScore1.Text = this.txtScore2.Text;
-            this.txtScore2.Text = text2;
+            this.txtScore2.Text = score;
+
+            string pronouns = this.txtPron1.Text;
+            this.txtPron1.Text = this.txtPron2.Text;
+            this.txtPron2.Text = pronouns;
+
+            object country = this.cmbCountry1.SelectedItem;
+            this.cmbCountry1.SelectedItem = this.cmbCountry2.SelectedItem;
+            this.cmbCountry2.SelectedItem = country;
         }
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
@@ -306,16 +321,16 @@ namespace OverlayControl
             File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
             File.WriteAllText("./round.txt", this.txtRound.Text);
-            UpdateScores();
+            updateScores();
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
-            UpdateCutIns();
+            updateCutIns();
         }
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
         {
 
-            isLooping = !isLooping;
-            if (isLooping)
+            _isLooping = !_isLooping;
+            if (_isLooping)
             {
                 // Update button description
                 btnHookToMelty.Content = "Unhook from MBAACC";
@@ -323,30 +338,30 @@ namespace OverlayControl
 
                 Task.Factory.StartNew(() =>
                 {
-                    while (isLooping)
+                    while (_isLooping)
                     {
                         // Verify if Melty is there 
-                        if (!hook.SearchForMelty())
+                        if (!_hook.SearchForMelty())
                         {
                             // If no Melty is found, clear the cut-ins and scores
-                            if (!hook.GetMB())
+                            if (!_hook.GetMB())
                             {
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = "_null");
                                 this.Dispatcher.Invoke(() => cmbChar2.Text = "_null");
                                 this.Dispatcher.Invoke(() => cmbMoon1.Text = "_null");
                                 this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
-                                this.Dispatcher.Invoke(() => UpdateCutIns());
-                                scoreCurrent1 = 0;
-                                scoreCurrent2 = 0;
-                                scoreTotal1 = 0;
-                                scoreTotal2 = 0;
+                                this.Dispatcher.Invoke(() => updateCutIns());
+                                _scoreCurrent1 = 0;
+                                _scoreCurrent2 = 0;
+                                _scoreTotal1 = 0;
+                                _scoreTotal2 = 0;
                             }
                             // If a Melty is found, set the scores visually back to 0
                             else
                             {
                                 this.Dispatcher.Invoke(() => txtScore1.Text = "0");
                                 this.Dispatcher.Invoke(() => txtScore2.Text = "0");
-                                this.Dispatcher.Invoke(() => UpdateScores());
+                                this.Dispatcher.Invoke(() => updateScores());
                             }
                         }
 
@@ -357,19 +372,19 @@ namespace OverlayControl
 
                 Task.Factory.StartNew(() =>
                 {
-                    while (isLooping)
+                    while (_isLooping)
                     {
-                        if (hook.SearchForMelty())
+                        if (_hook.SearchForMelty())
                         {
                             // Read from Melty's memory
-                            bool select1 = hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
-                            bool select2 = hook.ReadMem((int)MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] >= 1;
-                            string char1 = CharacterArray[hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
-                            string char2 = CharacterArray[hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
-                            string moon1 = Moons[hook.ReadMem((int)MeltyMem.CC_P1_MOON_SELECTOR_ADDR, 1)[0]];
-                            string moon2 = Moons[hook.ReadMem((int)MeltyMem.CC_P2_MOON_SELECTOR_ADDR, 1)[0]];
-                            int score1 = hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0];
-                            int score2 = hook.ReadMem((int)MeltyMem.CC_P2_SCORE_ADDR, 1)[0];
+                            bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
+                            bool select2 = _hook.ReadMem((int)MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] >= 1;
+                            string char1 = CharacterArray[_hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
+                            string char2 = CharacterArray[_hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
+                            string moon1 = Moons[_hook.ReadMem((int)MeltyMem.CC_P1_MOON_SELECTOR_ADDR, 1)[0]];
+                            string moon2 = Moons[_hook.ReadMem((int)MeltyMem.CC_P2_MOON_SELECTOR_ADDR, 1)[0]];
+                            int score1 = _hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0];
+                            int score2 = _hook.ReadMem((int)MeltyMem.CC_P2_SCORE_ADDR, 1)[0];
 
                             // Update the cut-ins
                             if (char1 != null && char1.Length > 1)
@@ -392,25 +407,25 @@ namespace OverlayControl
                             else
                                 this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
 
-                            this.Dispatcher.Invoke(() => UpdateCutIns());
+                            this.Dispatcher.Invoke(() => updateCutIns());
 
                             // Update the scores if necessary
-                            if (score1 > scoreCurrent1)
+                            if (score1 > _scoreCurrent1)
                             {
-                                scoreTotal1++;
-                                this.Dispatcher.Invoke(() => txtScore1.Text = scoreTotal1.ToString());
-                                this.Dispatcher.Invoke(() => UpdateScores());
+                                _scoreTotal1++;
+                                this.Dispatcher.Invoke(() => txtScore1.Text = _scoreTotal1.ToString());
+                                this.Dispatcher.Invoke(() => updateScores());
                             }
-                            if (score2 > scoreCurrent2)
+                            if (score2 > _scoreCurrent2)
                             {
-                                scoreTotal2++;
-                                this.Dispatcher.Invoke(() => txtScore2.Text = scoreTotal2.ToString());
-                                this.Dispatcher.Invoke(() => UpdateScores());
+                                _scoreTotal2++;
+                                this.Dispatcher.Invoke(() => txtScore2.Text = _scoreTotal2.ToString());
+                                this.Dispatcher.Invoke(() => updateScores());
                             }
 
                             // Update the app's score counter
-                            scoreCurrent1 = score1;
-                            scoreCurrent2 = score2;
+                            _scoreCurrent1 = score1;
+                            _scoreCurrent2 = score2;
                         }
 
                         // Update once per in-game frame 
@@ -431,7 +446,7 @@ namespace OverlayControl
 
         }
 
-        private void BtnImage_Click(object sender, RoutedEventArgs e)
+        private void btnImage_Click(object sender, RoutedEventArgs e)
         {
             if (this.cmbChar1.Text != "")
                 this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
@@ -451,14 +466,14 @@ namespace OverlayControl
         //    this.CutIn2.Show();
         //}
 
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             MainWindow.IsClosing = true;
             this._visuals.Close();
 
         }
 
-        private void UpdateCutIns()
+        private void updateCutIns()
         {
             if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
                 this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
@@ -466,7 +481,7 @@ namespace OverlayControl
                     new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
         }
 
-        private void UpdateScores()
+        private void updateScores()
         {
             File.WriteAllText("./score1.txt", this.txtScore1.Text);
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
@@ -474,7 +489,7 @@ namespace OverlayControl
 
         private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
         {
-            hook.SwapActiveProcess();
+            _hook.SwapActiveProcess();
         }
     }
 }
