@@ -128,99 +128,99 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cutins\Akiha Tohno.png">
+    <Content Include="cutins\Akiha.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Akiha Vermillion.png">
+    <Content Include="cutins\VAkiha.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Aoko Aozaki.png">
+    <Content Include="cutins\Aoko.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Archetype-Earth.png">
+    <Content Include="cutins\Hime.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Arcueid Brunestud.png">
+    <Content Include="cutins\Arcueid.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="cutins\Ciel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Hisui &amp; Kohaku.png">
+    <Content Include="cutins\Maids.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="cutins\Hisui.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Koha &amp; Mech.png">
+    <Content Include="cutins\Kohamech.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="cutins\Kohaku.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Kouma Kishima.png">
+    <Content Include="cutins\Kouma.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="cutins\Len.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Mech-Hisui.png">
+    <Content Include="cutins\Mech.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Michael Roa Valdamjong.png">
+    <Content Include="cutins\Roa.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Miyako Arima.png">
+    <Content Include="cutins\Miyako.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Neco &amp; Mech.png">
+    <Content Include="cutins\Necomech.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Neco-Arc Chaos.png">
+    <Content Include="cutins\NAC.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Neco-Arc.png">
+    <Content Include="cutins\Neco.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Nrvnqsr Chaos.png">
+    <Content Include="cutins\Nero.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="moons\_null.png" />
-    <Resource Include="cutins\_null.png" />
-    <Content Include="cutins\Powered Ciel.png">
+    <Resource Include="moons\Null.png" />
+    <Resource Include="cutins\Random.png" />
+    <Content Include="cutins\PCiel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Red Arcueid.png">
+    <Content Include="cutins\WArc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Riesbyfe Stridberg.png">
+    <Content Include="cutins\Riesbyfe.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Satsuki Yumizuka.png">
+    <Content Include="cutins\Satsuki.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Seifuku Akiha.png">
+    <Content Include="cutins\Seifuku.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Shiki Nanaya.png">
+    <Content Include="cutins\Nanaya.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Shiki Ryougi.png">
+    <Content Include="cutins\Ryougi.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Shiki Tohno.png">
+    <Content Include="cutins\Tohno.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Sion Eltnam Atlasia.png">
+    <Content Include="cutins\Sion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Sion Tatari.png">
+    <Content Include="cutins\VSion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\Wallachia.png">
+    <Content Include="cutins\Warachia.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="cutins\White Len.png">
+    <Content Include="cutins\WLen.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="binaries\meltyhook.dll" />

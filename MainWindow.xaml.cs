@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
@@ -17,41 +18,7 @@ namespace OverlayControl
     {
         #region Properties
         public static bool IsClosing = false;
-        public static List<string> CharacterList = new List<string>()
-    {
-      "_null",
-      "Akiha Tohno",
-      "Akiha Vermillion",
-      "Aoko Aozaki",
-      "Archetype-Earth",
-      "Arcueid Brunestud",
-      "Ciel",
-      "Hisui",
-      "Hisui & Kohaku",
-      "Kohaku",
-      "Koha & Mech",
-      "Kouma Kishima",
-      "Len",
-      "Mech-Hisui",
-      "Michael Roa Valdamjong",
-      "Miyako Arima",
-      "Neco & Mech",
-      "Neco-Arc",
-      "Neco-Arc Chaos",
-      "Nrvnqsr Chaos",
-      "Powered Ciel",
-      "Red Arcueid",
-      "Riesbyfe Stridberg",
-      "Satsuki Yumizuka",
-      "Seifuku Akiha",
-      "Shiki Nanaya",
-      "Shiki Ryougi",
-      "Shiki Tohno",
-      "Sion Eltnam Atlasia",
-      "Sion Tatari",
-      "Wallachia",
-      "White Len"
-    };
+        public static List<string> CharacterList = new List<string>();
         public static string[] CharacterArray = new string[0x64];
         public Dictionary<string, string> Shorthands = new Dictionary<string, string>()
     {
@@ -185,14 +152,14 @@ namespace OverlayControl
       "Crescent",
       "Full",
       "Half",
-      "_null"
+      "Null"
     };
         public Match CurrentMatch;
         #endregion
 
         #region Private variables
-        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
-            new BitmapImage(new Uri("cutins/_null.png", UriKind.Relative)), new BitmapImage(new Uri("moons/_null.png", UriKind.Relative)),
+        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
+            new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood _hook = new MeltyBlood();
         private bool _isLooping = false;
@@ -233,51 +200,17 @@ namespace OverlayControl
             set => this.txtTournament.Text = value;
         }
         #endregion
-
+        
         public MainWindow()
         {
             this.InitializeComponent();
-            this.cmbChar1.ItemsSource = (IEnumerable)MainWindow.CharacterList;
-            this.cmbChar2.ItemsSource = (IEnumerable)MainWindow.CharacterList;
+            this.cmbChar1.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
+            this.cmbChar2.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
             this.cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
 
-            #region Filling the CharacterArray
-            CharacterArray[0x00] = "Sion Eltnam Atlasia";
-            CharacterArray[0x01] = "Arcueid Brunestud";
-            CharacterArray[0x02] = "Ciel";
-            CharacterArray[0x03] = "Akiha Tohno";
-            CharacterArray[0x04] = "Hisui & Kohaku";
-            CharacterArray[0x05] = "Hisui";
-            CharacterArray[0x06] = "Kohaku";
-            CharacterArray[0x07] = "Shiki Tohno";
-            CharacterArray[0x08] = "Miyako Arima";
-            CharacterArray[0x09] = "Wallachia";
-            CharacterArray[0x0A] = "Nrvnqsr Chaos";
-            CharacterArray[0x0B] = "Sion Tatari";
-            CharacterArray[0x0C] = "Red Arcueid";
-            CharacterArray[0x0D] = "Akiha Vermillion";
-            CharacterArray[0x0E] = "Mech-Hisui";
-            CharacterArray[0x0F] = "Shiki Nanaya";
-            CharacterArray[0x11] = "Satsuki Yumizuka";
-            CharacterArray[0x12] = "Len";
-            CharacterArray[0x13] = "Powered Ciel";
-            CharacterArray[0x14] = "Neco-Arc";
-            CharacterArray[0x16] = "Aoko Aozaki";
-            CharacterArray[0x17] = "White Len";
-            CharacterArray[0x19] = "Neco-Arc Chaos";
-            CharacterArray[0x1C] = "Kouma Kishima";
-            CharacterArray[0x1D] = "Seifuku Akiha";
-            CharacterArray[0x1E] = "Riesbyfe Stridberg";
-            CharacterArray[0x1F] = "Michael Roa Valdamjong";
-            CharacterArray[0x21] = "Shiki Ryougi";
-            CharacterArray[0x22] = "Neco & Mech";
-            CharacterArray[0x23] = "Koha & Mech";
-            CharacterArray[0x33] = "Archetype-Earth";
-            CharacterArray[0x63] = "_null";
-            #endregion
         }
 
         private void btnSwap_Click(object sender, RoutedEventArgs e)
@@ -346,10 +279,10 @@ namespace OverlayControl
                             // If no Melty is found, clear the cut-ins and scores
                             if (!_hook.GetMB())
                             {
-                                this.Dispatcher.Invoke(() => cmbChar1.Text = "_null");
-                                this.Dispatcher.Invoke(() => cmbChar2.Text = "_null");
-                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "_null");
-                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
+                                this.Dispatcher.Invoke(() => cmbChar1.Text = "Random");
+                                this.Dispatcher.Invoke(() => cmbChar2.Text = "Random");
+                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
+                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
                                 this.Dispatcher.Invoke(() => updateCutIns());
                                 _scoreCurrent1 = 0;
                                 _scoreCurrent2 = 0;
@@ -379,8 +312,8 @@ namespace OverlayControl
                             // Read from Melty's memory
                             bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
                             bool select2 = _hook.ReadMem((int)MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] >= 1;
-                            string char1 = CharacterArray[_hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
-                            string char2 = CharacterArray[_hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
+                            string char1 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
+                            string char2 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
                             string moon1 = Moons[_hook.ReadMem((int)MeltyMem.CC_P1_MOON_SELECTOR_ADDR, 1)[0]];
                             string moon2 = Moons[_hook.ReadMem((int)MeltyMem.CC_P2_MOON_SELECTOR_ADDR, 1)[0]];
                             int score1 = _hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0];
@@ -390,22 +323,22 @@ namespace OverlayControl
                             if (char1 != null && char1.Length > 1)
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = char1);
                             else
-                                this.Dispatcher.Invoke(() => cmbChar1.Text = "_null");
+                                this.Dispatcher.Invoke(() => cmbChar1.Text = "Null");
 
                             if (char2 != null && char2.Length > 1)
                                 this.Dispatcher.Invoke(() => cmbChar2.Text = char2);
                             else
-                                this.Dispatcher.Invoke(() => cmbChar2.Text = "_null");
+                                this.Dispatcher.Invoke(() => cmbChar2.Text = "Null");
 
                             if (moon1 != null && moon1.Length > 1 && select1)
                                 this.Dispatcher.Invoke(() => cmbMoon1.Text = moon1);
                             else
-                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "_null");
+                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
 
                             if (moon2 != null && moon2.Length > 1 && select2)
                                 this.Dispatcher.Invoke(() => cmbMoon2.Text = moon2);
                             else
-                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "_null");
+                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
 
                             this.Dispatcher.Invoke(() => updateCutIns());
 
