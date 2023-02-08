@@ -67,7 +67,7 @@ namespace OverlayControl
                 else if (Regex.Replace(txtRound.Text, @"\s+", "").EndsWith("s"))
                     return string.Concat(txtRound.Text.Replace("Semis", "Semi Finals").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0]))) + 's';
                 else
-                    return string.Concat(txtRound.Text.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0])));
+                    return string.Concat(txtRound.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0])));
             }
             set => txtRound.Text = value;
         }
@@ -83,6 +83,97 @@ namespace OverlayControl
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
+
+        }
+
+        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MainWindow.IsClosing = true;
+            this._visuals.Close();
+
+        }
+
+        private void updateCutIns()
+        {
+            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
+                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+        }
+
+        private void updateScores()
+        {
+            File.WriteAllText("./score1.txt", this.txtScore1.Text);
+            File.WriteAllText("./score2.txt", this.txtScore2.Text);
+        }
+
+        private void manageTimestamp()
+        {
+            if (CurrentMatch != null)
+            {
+                // If we have a new match, save previous match to file
+                if (CurrentMatch.IsNewMatch(Player1, Player2))
+                {
+                    // Check if file exists
+                    if (!File.Exists("./timestamps_" + txtTournament.Text + ".txt"))
+                        // If it doesn't, create file and save initial timestamp
+                        File.WriteAllText("./timestamps_" + txtTournament.Text + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
+
+                    try
+                    {
+                        // Get the first match's time
+                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + txtTournament.Text + ".txt").First());
+                        DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
+                        TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
+                        // Append current match with timestamp relative to first match of the tournament
+                        if (timestamp.TotalHours >= 1)
+                            File.AppendAllText("./timestamps_" + txtTournament.Text + ".txt",
+                                "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
+                        else
+                            File.AppendAllText("./timestamps_" + txtTournament.Text + ".txt",
+                                "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
+
+
+                    }
+                    catch { }
+
+                    // Create new match once the previous one is saved
+                    CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+                }
+                // If not, check if either of them changed characters and update match status
+                else
+                {
+                    if (CurrentMatch.IsReversed(Player1, Player2) == false)
+                    {
+                        if (!CurrentMatch.Characters1.Contains(Character1))
+                            CurrentMatch.Characters1.Add(Character1);
+                        if (!CurrentMatch.Characters2.Contains(Character2))
+                            CurrentMatch.Characters2.Add(Character2);
+                    }
+                    else if (CurrentMatch.IsReversed(Player1, Player2) == true)
+                    {
+                        if (!CurrentMatch.Characters1.Contains(Character2))
+                            CurrentMatch.Characters1.Add(Character2);
+                        if (!CurrentMatch.Characters2.Contains(Character1))
+                            CurrentMatch.Characters2.Add(Character1);
+                    }
+                }
+            }
+            // If previous match is null, simply create new match
+            else
+                CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+        }
+
+        #region Buttons
+        private void btnImages_Click(object sender, RoutedEventArgs e)
+        {
+            if (cmbChar1.Text != "")
+                _visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+            if (this._visuals.IsVisible)
+                return;
+            _visuals.Show();
         }
 
         private void btnSwap_Click(object sender, RoutedEventArgs e)
@@ -114,28 +205,6 @@ namespace OverlayControl
             object country = this.cmbCountry1.SelectedItem;
             this.cmbCountry1.SelectedItem = this.cmbCountry2.SelectedItem;
             this.cmbCountry2.SelectedItem = country;
-        }
-
-        private void btnUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
-            File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
-            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
-            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
-            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
-            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
-            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
-            File.WriteAllText("./round.txt", this.txtRound.Text);
-            File.WriteAllText("./tournament.txt", this.txtTournament.Text);
-            updateScores();
-            updateCutIns();
-
-            //try
-            //{
-            //    CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
-            //    File.WriteAllText("./timestamps_" + txtTournament.Text + ".txt", CurrentMatch.ToString());
-            //}
-            //catch{}
         }
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
@@ -258,41 +327,25 @@ namespace OverlayControl
 
         }
 
-        private void btnImage_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.cmbChar1.Text != "")
-                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
-            if (this._visuals.IsVisible)
-                return;
-            this._visuals.Show();
-        }
-
-        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            MainWindow.IsClosing = true;
-            this._visuals.Close();
-
-        }
-
-        private void updateCutIns()
-        {
-            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
-                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
-        }
-
-        private void updateScores()
-        {
-            File.WriteAllText("./score1.txt", this.txtScore1.Text);
-            File.WriteAllText("./score2.txt", this.txtScore2.Text);
-        }
-
         private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
         {
             _hook.SwapActiveProcess();
         }
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
+            File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
+            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
+            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
+            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
+            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
+            File.WriteAllText("./round.txt", this.txtRound.Text);
+            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
+            File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+            updateScores();
+            updateCutIns();
+        }
+        #endregion
     }
 }
