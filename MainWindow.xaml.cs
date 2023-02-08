@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
@@ -20,140 +21,7 @@ namespace OverlayControl
         public static bool IsClosing = false;
         public static List<string> CharacterList = new List<string>();
         public static string[] CharacterArray = new string[0x64];
-        public Dictionary<string, string> Shorthands = new Dictionary<string, string>()
-    {
-      {
-        "Akiha Tohno",
-        "Akiha"
-      },
-      {
-        "Akiha Vermillion",
-        "VAkiha"
-      },
-      {
-        "Aoko Aozaki",
-        "Aoko"
-      },
-      {
-        "Archetype-Earth",
-        "Hime"
-      },
-      {
-        "Arcueid Brunestud",
-        "Arcueid"
-      },
-      {
-        "Ciel",
-        "Ciel"
-      },
-      {
-        "Hisui",
-        "Hisui"
-      },
-      {
-        "Hisui & Kohaku",
-        "Maids"
-      },
-      {
-        "Kohaku",
-        "Kohaku"
-      },
-      {
-        "Koha & Mech",
-        "Kohamech"
-      },
-      {
-        "Kouma Kishima",
-        "Kouma"
-      },
-      {
-        "Len",
-        "Len"
-      },
-      {
-        "Mech-Hisui",
-        "Mech"
-      },
-      {
-        "Michael Roa Valdamjong",
-        "Roa"
-      },
-      {
-        "Miyako Arima",
-        "Miyako"
-      },
-      {
-        "Neco & Mech",
-        "Necomech"
-      },
-      {
-        "Neco-Arc",
-        "Neco-Arc"
-      },
-      {
-        "Neco-Arc Chaos",
-        "NAC"
-      },
-      {
-        "Nrvnqsr Chaos",
-        "Nero"
-      },
-      {
-        "Powered Ciel",
-        "PCiel"
-      },
-      {
-        "Red Arcueid",
-        "Warc"
-      },
-      {
-        "Riesbyfe Stridberg",
-        "Riesbyfe"
-      },
-      {
-        "Satsuki Yumizuka",
-        "Satsuki"
-      },
-      {
-        "Seifuku Akiha",
-        "Seifuku"
-      },
-      {
-        "Shiki Nanaya",
-        "Nanaya"
-      },
-      {
-        "Shiki Ryougi",
-        "Ryougi"
-      },
-      {
-        "Shiki Tohno",
-        "Tohno"
-      },
-      {
-        "Sion Eltnam Atlasia",
-        "Sion"
-      },
-      {
-        "Sion Tatari",
-        "VSion"
-      },
-      {
-        "Wallachia",
-        "Warachia"
-      },
-      {
-        "White Len",
-        "White Len"
-      }
-    };
-        public static List<string> Moons = new List<string>()
-        {
-      "Crescent",
-      "Full",
-      "Half",
-      "Null"
-    };
+        public static List<string> Moons = new List<string>() { "Crescent", "Full", "Half", "Null" };
         public Match CurrentMatch;
         #endregion
 
@@ -174,33 +42,38 @@ namespace OverlayControl
 
         public string Player1
         {
-            get => this.txtPlayer1.Text;
-            set => this.txtPlayer1.Text = value;
+            get => txtSponsor1.Text + " | " + txtPlayer1.Text;
+            set => txtPlayer1.Text = value;
         }
 
         public string Player2
         {
-            get => this.txtPlayer2.Text;
-            set => this.txtPlayer2.Text = value;
+            get => txtSponsor2.Text + " | " + txtPlayer2.Text;
+            set => txtPlayer2.Text = value;
         }
 
-        public string Character1 => this.cmbMoon1.Text[0].ToString() + "-" + this.Shorthands[this.cmbChar1.Text];
+        public string Character1 => cmbMoon1.Text[0].ToString() + "-" + cmbChar1.Text;
 
-        public string Character2 => this.cmbMoon2.Text[0].ToString() + "-" + this.Shorthands[this.cmbChar2.Text];
+        public string Character2 => cmbMoon2.Text[0].ToString() + "-" + cmbChar2.Text;
 
         public string Round
         {
-            get => this.txtRound.Text;
-            set => this.txtRound.Text = value;
+            get
+            {
+                // Group Phase
+                if (Regex.Match(txtRound.Text, @"\d+").Success)
+                    return string.Concat(txtRound.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1 && char.IsLetter(w[0])).Select(w => char.ToUpper(w[0]))) + Regex.Match(txtRound.Text, @"\d+").Value;
+                // Bracket Phase
+                else if (Regex.Replace(txtRound.Text, @"\s+", "").EndsWith("s"))
+                    return string.Concat(txtRound.Text.Replace("Semis", "Semi Finals").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0]))) + 's';
+                else
+                    return string.Concat(txtRound.Text.Split(new[]{' '}, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0])));
+            }
+            set => txtRound.Text = value;
         }
 
-        public string Tournament
-        {
-            get => this.txtTournament.Text;
-            set => this.txtTournament.Text = value;
-        }
         #endregion
-        
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -210,7 +83,6 @@ namespace OverlayControl
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
-
         }
 
         private void btnSwap_Click(object sender, RoutedEventArgs e)
@@ -254,9 +126,16 @@ namespace OverlayControl
             File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
             File.WriteAllText("./round.txt", this.txtRound.Text);
-            updateScores();
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+            updateScores();
             updateCutIns();
+
+            //try
+            //{
+            //    CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+            //    File.WriteAllText("./timestamps_" + txtTournament.Text + ".txt", CurrentMatch.ToString());
+            //}
+            //catch{}
         }
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
@@ -389,15 +268,6 @@ namespace OverlayControl
                 return;
             this._visuals.Show();
         }
-
-        //private void BtnImage2_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (this.cmbChar2.Text != "")
-        //        this.CutIn2.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)));
-        //    if (this.CutIn2.IsVisible)
-        //        return;
-        //    this.CutIn2.Show();
-        //}
 
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

@@ -20,16 +20,13 @@ namespace OverlayControl
 
     public string Round { get; set; }
 
-    public string Tournament { get; set; }
-
-    public Match(string p1, string p2, string c1, string c2, string r, string t)
+    public Match(string p1, string p2, string c1, string c2, string r)
     {
       this.Player1 = p1;
       this.Player2 = p2;
       this.Characters1 = new List<string>() { c1 };
       this.Characters2 = new List<string>() { c2 };
       this.Round = r;
-      this.Tournament = t;
     }
 
     public bool IsNewMatch(string p1, string p2)
