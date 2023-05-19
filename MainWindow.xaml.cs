@@ -36,6 +36,7 @@ namespace OverlayControl
         private int _scoreTotal2 = 0;
         private int _scoreCurrent1 = 0;
         private int _scoreCurrent2 = 0;
+        private string _tourneyName = "";
         #endregion
 
         #region String properties
@@ -115,22 +116,22 @@ namespace OverlayControl
                 if (CurrentMatch.IsNewMatch(Player1, Player2))
                 {
                     // Check if file exists
-                    if (!File.Exists("./timestamps_" + txtTournament.Text + ".txt"))
+                    if (!File.Exists("./timestamps_" + _tourneyName + ".txt"))
                         // If it doesn't, create file and save initial timestamp
-                        File.WriteAllText("./timestamps_" + txtTournament.Text + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
+                        File.WriteAllText("./timestamps_" + _tourneyName + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
 
                     try
                     {
                         // Get the first match's time
-                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + txtTournament.Text + ".txt").First());
+                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + _tourneyName + ".txt").First());
                         DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
                         TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
                         // Append current match with timestamp relative to first match of the tournament
                         if (timestamp.TotalHours >= 1)
-                            File.AppendAllText("./timestamps_" + txtTournament.Text + ".txt",
+                            File.AppendAllText("./timestamps_" + _tourneyName + ".txt",
                                 "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
                         else
-                            File.AppendAllText("./timestamps_" + txtTournament.Text + ".txt",
+                            File.AppendAllText("./timestamps_" + _tourneyName + ".txt",
                                 "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
 
 
@@ -209,13 +210,15 @@ namespace OverlayControl
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
         {
-
             _isLooping = !_isLooping;
             if (_isLooping)
             {
+                int lastIntroState = 2;
+
                 // Update button description
                 btnHookToMelty.Content = "Unhook from MBAACC";
-                btnHookToMelty.FontSize = 11;
+                btnHookToMelty.FontSize = 10;
+
 
                 Task.Factory.StartNew(() =>
                 {
@@ -307,16 +310,31 @@ namespace OverlayControl
                             // Update the app's score counter
                             _scoreCurrent1 = score1;
                             _scoreCurrent2 = score2;
+
+                            // Check if a new match is starting
+                            //if (_hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0]))
+                            //{
+
+                            //}
+                            int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
+                            if (lastIntroState != currentIntroState)
+                            {
+                                lastIntroState = currentIntroState;
+                                if (lastIntroState == 1)
+                                    this.Dispatcher.Invoke(new Action(() => manageTimestamp()));
+                            }
+
                         }
 
                         // Update once per in-game frame 
                         System.Threading.Thread.Sleep(16);
+
+
                     }
                 });
 
 
             }
-
             else
             {
                 // Update button description
@@ -343,6 +361,9 @@ namespace OverlayControl
             File.WriteAllText("./round.txt", this.txtRound.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+
+            _tourneyName = this.txtTournament.Text;
+
             updateScores();
             updateCutIns();
         }
