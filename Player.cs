@@ -1,13 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: OverlayControl.Match
-// Assembly: OverlayControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 7DCA1402-0FB1-4086-89FB-0ABEDB51AD19
-// Assembly location: D:\Vivi\Drive\Stream\OverlayControl.exe
-
-using System.Collections.Generic;
-using System.ComponentModel; 
-
-namespace OverlayControl
+﻿namespace OverlayControl
 {
   public class Player
   {

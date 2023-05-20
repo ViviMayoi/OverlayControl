@@ -8,10 +8,6 @@
         Closing="mainWindow_Closing" x:Name="mainWindow" Title="OverlayControl" Height="268" Width="710"
         ResizeMode="CanMinimize">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="59*"/>
-            <ColumnDefinition Width="117*"/>
-        </Grid.ColumnDefinitions>
         <Label x:Name="lblPlayer1" Content="P1:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="10,10,0,0" Width="25" Height="26"/>
         <TextBox x:Name="txtSponsor1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
@@ -19,13 +15,13 @@
         <TextBox x:Name="txtPlayer1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="113" Margin="151,13,0,0"  TabIndex="1" Grid.ColumnSpan="2"/>
         <Label x:Name="lblCharacter1" Content="Character:" HorizontalAlignment="Left" VerticalAlignment="Top"
-           Margin="33.333,13,0,0" Width="65" Height="26" Grid.Column="1"/>
+           Margin="269,13,0,0" Width="65" Height="26"/>
         <ComboBox x:Name="cmbChar1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="176"
-              Margin="98.333,13,0,0" Height="26" IsTabStop="False" Grid.Column="1" />
-        <ComboBox x:Name="cmbMoon1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="278.333,14,0,0"
-              Height="25" IsTabStop="False" Grid.Column="1"/>
+              Margin="334,13,0,0" Height="26" IsTabStop="False" />
+        <ComboBox x:Name="cmbMoon1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="514,14,0,0"
+              Height="25" IsTabStop="False"/>
         <TextBox x:Name="txtScore1" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap"
-             VerticalAlignment="Top" Width="36" Margin="359,14,0,0" TabIndex="9" Grid.Column="1"/>
+             VerticalAlignment="Top" Width="36" Margin="595,14,0,0" TabIndex="9"/>
 
         <Label x:Name="lblPron1" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="10,44,0,0" Width="63" Height="26"/>
@@ -34,7 +30,7 @@
         <Label x:Name="lblCountry1" Content="Country:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="198,44,0,0" Width="65" Height="26" Grid.ColumnSpan="2"/>
         <ComboBox x:Name="cmbCountry1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="176"
-            Margin="20.333,44,0,0" Height="26" IsTabStop="False" Grid.Column="1" />
+            Margin="256,44,0,0" Height="26" IsTabStop="False" />
 
 
         <Label x:Name="lblPlayer2" Content="P2:" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -44,13 +40,13 @@
         <TextBox x:Name="txtPlayer2" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="113" Margin="151,77,0,0" TabIndex="4" Grid.ColumnSpan="2" />
         <Label x:Name="lblCharacter2" Content="Character:" HorizontalAlignment="Left" VerticalAlignment="Top"
-           Margin="33.333,77,0,0" Width="65" Height="26" Grid.Column="1"/>
+           Margin="269,77,0,0" Width="65" Height="26"/>
         <ComboBox x:Name="cmbChar2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="176"
-              Margin="98.333,77,0,0" Height="25" IsTabStop="False" Grid.Column="1" />
-        <ComboBox x:Name="cmbMoon2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="278.333,77,0,0"
-              Height="25" IsTabStop="False" Grid.Column="1" />
+              Margin="334,77,0,0" Height="25" IsTabStop="False" />
+        <ComboBox x:Name="cmbMoon2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="514,77,0,0"
+              Height="25" IsTabStop="False" />
         <TextBox x:Name="txtScore2" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap"
-             VerticalAlignment="Top" Width="36" Margin="359,77,0,0" TabIndex="10" Grid.Column="1" />
+             VerticalAlignment="Top" Width="36" Margin="595,77,0,0" TabIndex="10" />
 
         <Label x:Name="lblPron2" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="10,107,0,0" Width="63" Height="26"/>
@@ -59,7 +55,7 @@
         <Label x:Name="lblCountry2" Content="Country:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="198,107,0,0" Width="65" Height="26" Grid.ColumnSpan="2"/>
         <ComboBox x:Name="cmbCountry2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="176"
-            Margin="20.333,107,0,0" Height="26" IsTabStop="False" Grid.Column="1" />
+            Margin="256,107,0,0" Height="26" IsTabStop="False" />
 
         <Label x:Name="lblRound" Content="Round:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="10,168,0,0" Width="50" Height="26"/>
@@ -75,15 +71,15 @@
         <TextBox x:Name="txtCommentary" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="221" Margin="94,199,0,0" TabIndex="7" Grid.ColumnSpan="2" />
 
-        <Button Click="btnImages_Click" x:Name="btnImages" Content="Show Images" HorizontalAlignment="Left"
-            VerticalAlignment="Top" Width="100" Margin="84,171,0,0" Height="23" IsTabStop="False" Grid.Column="1" />
-        <Button Click="btnSwap_Click" x:Name="btnSwap" Content="Swap Players" VerticalAlignment="Top" Margin="190,171,0,0"
-            Height="23" HorizontalAlignment="Left" Width="100" IsTabStop="False" Grid.Column="1" />
+        <Button Click="btnImages_Click" x:Name="btnImages" Content="Show Images"
+            VerticalAlignment="Top" Margin="320,171,0,0" Height="23" IsTabStop="False" HorizontalAlignment="Left" Width="100" />
+        <Button Click="btnSwap_Click" x:Name="btnSwap" Content="Swap Players" VerticalAlignment="Top" Margin="426,171,0,0"
+            Height="23" HorizontalAlignment="Left" Width="100" IsTabStop="False" />
         <Button Click="btnHookToMelty_Click" x:Name="btnHookToMelty" Content="Hook to MBAACC"
-            HorizontalAlignment="Left" VerticalAlignment="Top" Width="101" Margin="84,199,0,0" Height="23" IsTabStop="False" Grid.Column="1" />
-        <Button x:Name="btnSwitchProcess" Content="Switch Process" HorizontalAlignment="Left" Height="23" Margin="190,199,0,0" 
-                VerticalAlignment="Top" Width="100" Click="btnSwitchProcess_Click" IsTabStop="False" Grid.Column="1" />
-        <Button Click="btnUpdate_Click" x:Name="btnUpdate" Content="Update Layout" VerticalAlignment="Top"
-            Margin="295,199,0,0" Height="23" HorizontalAlignment="Left" Width="100" IsTabStop="False" Grid.Column="1" />
+            HorizontalAlignment="Left" VerticalAlignment="Top" Width="153" Margin="320,199,0,0" Height="23" IsTabStop="False" />
+        <Button x:Name="btnSwitchProcess" Content="Switch Process" HorizontalAlignment="Left" Height="23" Margin="478,199,0,0" 
+                VerticalAlignment="Top" Width="153" Click="btnSwitchProcess_Click" IsTabStop="False" />
+        <Button Click="btnUpdateOverlay_Click" x:Name="btnUpdate" Content="Update Layout" VerticalAlignment="Top"
+            Margin="531,171,0,0" Height="23" IsTabStop="False" HorizontalAlignment="Left" Width="100" />
     </Grid>
 </Window>

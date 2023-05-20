@@ -12,9 +12,6 @@ using MeltyHook;
 
 namespace OverlayControl
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window, IComponentConnector
     {
         #region Properties
@@ -25,31 +22,31 @@ namespace OverlayControl
         public Match CurrentMatch;
         #endregion
 
-        #region Private variables
-        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
-            new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
-            new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
-        private readonly MeltyBlood _hook = new MeltyBlood();
-        private bool _isLooping = false;
-
-        private int _scoreTotal1 = 0;
-        private int _scoreTotal2 = 0;
-        private int _scoreCurrent1 = 0;
-        private int _scoreCurrent2 = 0;
-        private string _tourneyName = "";
-        #endregion
-
         #region String properties
 
         public string Player1
         {
-            get => txtSponsor1.Text + " | " + txtPlayer1.Text;
+            get
+            {
+                // Check for sponsor tag
+                if (txtSponsor1.Text.Trim() == string.Empty)
+                    return txtPlayer1.Text;
+                else
+                    return txtSponsor1.Text + " | " + txtPlayer1.Text;
+            }
             set => txtPlayer1.Text = value;
         }
 
         public string Player2
         {
-            get => txtSponsor2.Text + " | " + txtPlayer2.Text;
+            get
+            {
+                // Check for sponsor tag
+                if (txtSponsor2.Text.Trim() == string.Empty)
+                    return txtPlayer2.Text;
+                else
+                    return txtSponsor2.Text + " | " + txtPlayer2.Text;
+            }
             set => txtPlayer2.Text = value;
         }
 
@@ -64,6 +61,7 @@ namespace OverlayControl
                 // Group Phase
                 if (Regex.Match(txtRound.Text, @"\d+").Success)
                     return string.Concat(txtRound.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1 && char.IsLetter(w[0])).Select(w => char.ToUpper(w[0]))) + Regex.Match(txtRound.Text, @"\d+").Value;
+
                 // Bracket Phase
                 else if (Regex.Replace(txtRound.Text, @"\s+", "").EndsWith("s"))
                     return string.Concat(txtRound.Text.Replace("Semis", "Semi Finals").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Where(w => w.Length >= 1).Select(w => char.ToUpper(w[0]))) + 's';
@@ -73,18 +71,38 @@ namespace OverlayControl
             set => txtRound.Text = value;
         }
 
+        public string Tournament
+        {
+            get => txtTournament.Text;
+            set => txtTournament.Text = value;
+        }
         #endregion
 
+        #region Private variables
+        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
+            new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
+            new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
+        private readonly MeltyBlood _hook = new MeltyBlood();
+        private bool _isLooping = false;
+
+        private int _scoreTotal1 = 0;
+        private int _scoreTotal2 = 0;
+        private int _scoreCurrent1 = 0;
+        private int _scoreCurrent2 = 0;
+        #endregion
+
+        #region Interface
         public MainWindow()
         {
             this.InitializeComponent();
+
+            // Initialize sources
             this.cmbChar1.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
             this.cmbChar2.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
             this.cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
             this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
-
         }
 
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -94,86 +112,19 @@ namespace OverlayControl
 
         }
 
-        private void updateCutIns()
-        {
-            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
-                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
-        }
-
-        private void updateScores()
-        {
-            File.WriteAllText("./score1.txt", this.txtScore1.Text);
-            File.WriteAllText("./score2.txt", this.txtScore2.Text);
-        }
-
-        private void manageTimestamp()
-        {
-            if (CurrentMatch != null)
-            {
-                // If we have a new match, save previous match to file
-                if (CurrentMatch.IsNewMatch(Player1, Player2))
-                {
-                    // Check if file exists
-                    if (!File.Exists("./timestamps_" + _tourneyName + ".txt"))
-                        // If it doesn't, create file and save initial timestamp
-                        File.WriteAllText("./timestamps_" + _tourneyName + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
-
-                    try
-                    {
-                        // Get the first match's time
-                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + _tourneyName + ".txt").First());
-                        DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
-                        TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
-                        // Append current match with timestamp relative to first match of the tournament
-                        if (timestamp.TotalHours >= 1)
-                            File.AppendAllText("./timestamps_" + _tourneyName + ".txt",
-                                "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
-                        else
-                            File.AppendAllText("./timestamps_" + _tourneyName + ".txt",
-                                "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
-
-
-                    }
-                    catch { }
-
-                    // Create new match once the previous one is saved
-                    CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
-                }
-                // If not, check if either of them changed characters and update match status
-                else
-                {
-                    if (CurrentMatch.IsReversed(Player1, Player2) == false)
-                    {
-                        if (!CurrentMatch.Characters1.Contains(Character1))
-                            CurrentMatch.Characters1.Add(Character1);
-                        if (!CurrentMatch.Characters2.Contains(Character2))
-                            CurrentMatch.Characters2.Add(Character2);
-                    }
-                    else if (CurrentMatch.IsReversed(Player1, Player2) == true)
-                    {
-                        if (!CurrentMatch.Characters1.Contains(Character2))
-                            CurrentMatch.Characters1.Add(Character2);
-                        if (!CurrentMatch.Characters2.Contains(Character1))
-                            CurrentMatch.Characters2.Add(Character1);
-                    }
-                }
-            }
-            // If previous match is null, simply create new match
-            else
-                CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
-        }
-
         #region Buttons
         private void btnImages_Click(object sender, RoutedEventArgs e)
         {
+            // Update images
             if (cmbChar1.Text != "")
                 _visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
     new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
     new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+
+            // Return if images are already visible
             if (this._visuals.IsVisible)
                 return;
+
             _visuals.Show();
         }
 
@@ -210,16 +161,53 @@ namespace OverlayControl
 
         private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
         {
+            hookToMelty();
+        }
+
+        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
+        {
+            _hook.SwapActiveProcess();
+        }
+
+        private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            // Update every part of the overlay
+            File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
+            File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
+            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
+            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
+            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
+            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
+            File.WriteAllText("./round.txt", this.txtRound.Text);
+            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
+            File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+
+            updateScores();
+            updateCutIns();
+        }
+        #endregion
+        #endregion
+
+        #region Main methods
+        private void hookToMelty()
+        {
+            // Change to opposite state
             _isLooping = !_isLooping;
+
             if (_isLooping)
+            // Turning the hook loop on
             {
+                // Initialize intro state
+                // This variable will be set every frame to the current value found in MBAACCé
+                // Possible values are 2 (during character intros), 1 (pre-round movement) and 0 (during the round proper).
+                // When it turns to 1, the match has started for timestamp purposes.
                 int lastIntroState = 2;
 
                 // Update button description
                 btnHookToMelty.Content = "Unhook from MBAACC";
-                btnHookToMelty.FontSize = 10;
+                //btnHookToMelty.FontSize = 10;
 
-
+                // Thread that voids the current stream info when the game closes
                 Task.Factory.StartNew(() =>
                 {
                     while (_isLooping)
@@ -254,10 +242,12 @@ namespace OverlayControl
                     }
                 });
 
+                // Thread that updates character, score and timestamp info
                 Task.Factory.StartNew(() =>
                 {
                     while (_isLooping)
                     {
+                        // Verify if Melty is there 
                         if (_hook.SearchForMelty())
                         {
                             // Read from Melty's memory
@@ -312,10 +302,6 @@ namespace OverlayControl
                             _scoreCurrent2 = score2;
 
                             // Check if a new match is starting
-                            //if (_hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0]))
-                            //{
-
-                            //}
                             int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
                             if (lastIntroState != currentIntroState)
                             {
@@ -326,46 +312,91 @@ namespace OverlayControl
 
                         }
 
-                        // Update once per in-game frame 
+                        // Run this once per in-game frame 
                         System.Threading.Thread.Sleep(16);
-
-
                     }
                 });
-
-
             }
+
             else
+            // Turning the hook loop off
             {
                 // Update button description
-                btnHookToMelty.FontSize = 12;
                 btnHookToMelty.Content = "Hook to MBAACC";
+                //btnHookToMelty.FontSize = 12;
             }
-
-
         }
 
-        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
+        private void manageTimestamp()
         {
-            _hook.SwapActiveProcess();
+            // Check if there is currently a match being tracked
+            if (CurrentMatch != null)
+            {
+                // If we have a new match, save previous match to file
+                if (CurrentMatch.IsNewMatch(Player1, Player2))
+                {
+                    // Check if file exists
+                    if (!File.Exists("./timestamps_" + Tournament + ".txt"))
+                        // If it doesn't, create file and save initial timestamp
+                        File.WriteAllText("./timestamps_" + Tournament + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
+
+                    try
+                    {
+                        // Get the first match's time
+                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + Tournament + ".txt").First());
+                        DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
+                        TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
+
+                        // Append current match with timestamp relative to first match of the tournament
+                        if (timestamp.TotalHours >= 1)
+                            File.AppendAllText("./timestamps_" + Tournament + ".txt",
+                                "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
+                        else
+                            File.AppendAllText("./timestamps_" + Tournament + ".txt",
+                                "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
+                    }
+                    catch { }
+
+                    // Create new match once the previous one is saved
+                    CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+                }
+
+                else
+                {
+                    // If not, check if either of them changed characters and update match status
+                    if (CurrentMatch.IsReversed(Player1, Player2) == false)
+                    {
+                        if (!CurrentMatch.Characters1.Contains(Character1))
+                            CurrentMatch.Characters1.Add(Character1);
+                        if (!CurrentMatch.Characters2.Contains(Character2))
+                            CurrentMatch.Characters2.Add(Character2);
+                    }
+                    else if (CurrentMatch.IsReversed(Player1, Player2) == true)
+                    {
+                        if (!CurrentMatch.Characters1.Contains(Character2))
+                            CurrentMatch.Characters1.Add(Character2);
+                        if (!CurrentMatch.Characters2.Contains(Character1))
+                            CurrentMatch.Characters2.Add(Character1);
+                    }
+                }
+            }
+            // If previous match is null, go ahead and create new match
+            else
+                CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
         }
 
-        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        private void updateCutIns()
         {
-            File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
-            File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
-            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
-            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
-            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
-            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
-            File.WriteAllText("./round.txt", this.txtRound.Text);
-            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
-            File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
+                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+        }
 
-            _tourneyName = this.txtTournament.Text;
-
-            updateScores();
-            updateCutIns();
+        private void updateScores()
+        {
+            File.WriteAllText("./score1.txt", this.txtScore1.Text);
+            File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
         #endregion
     }

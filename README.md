@@ -3,12 +3,12 @@ OverlayControl is a WPF app designed to help control and automate stream overlay
 
 ## Current features
 - Lets the user control information relative to the current match or tournament, to be displayed on a stream overlay, all from the same interface:
-    - Both players'...
-        - Tagss
+    - For both players, their...
+        - Tags
         - Sponsor tags
         - Pronouns 
         - Country flags
-        - Characters (currently using predetermined images of a static size)
+        - Characters (currently using predetermined images of a static size, used for *Snaildom Saturday Melty* streams)
     - Tournament name
     - Current round
 - Automatically updates scores and selected characters by hooking to the game
