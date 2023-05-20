@@ -11,6 +11,7 @@ OverlayControl is a WPF app designed to help control and automate stream overlay
         - Characters (currently using predetermined images of a static size, used for *Snaildom Saturday Melty* streams)
     - Tournament name
     - Current round
+	- Commentators
 - Automatically updates scores and selected characters by hooking to the game
 - Creates a timestamp file based on the start of the first match of the stream
 

@@ -181,6 +181,7 @@ namespace OverlayControl
             File.WriteAllText("./round.txt", this.txtRound.Text);
             File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
             File.WriteAllText("./tournament.txt", this.txtTournament.Text);
+            File.WriteAllText("./matchcount.txt", this.cmbMatchCount.Text.Trim() + ' ' + this.txtMatchCount.Text);
 
             updateScores();
             updateCutIns();
