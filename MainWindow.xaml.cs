@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -109,7 +110,6 @@ namespace OverlayControl
         {
             MainWindow.IsClosing = true;
             this._visuals.Close();
-
         }
 
         #region Buttons
@@ -187,6 +187,23 @@ namespace OverlayControl
             updateCutIns();
         }
         #endregion
+
+        private void mnuFinalizeTimestamps_Click(object sender, RoutedEventArgs e)
+        {
+            TimestampPrompt prompt = new TimestampPrompt();
+            if (prompt.ShowDialog() == true)
+            {
+
+                TimeSpan parsedTime;
+                if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
+                    finalizeTimestamps(parsedTime);
+                // Add 0 hour marker if necessary
+                else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
+                    finalizeTimestamps(parsedTime);
+                else
+                    MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+            }
+        }
         #endregion
 
         #region Main methods
@@ -399,6 +416,66 @@ namespace OverlayControl
             File.WriteAllText("./score1.txt", this.txtScore1.Text);
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
+
+        private void finalizeTimestamps(TimeSpan vodTime)
+        {
+            if (File.Exists("./timestamps_" + Tournament + ".txt"))
+            {
+                // Separate the lines
+                List<string> lines = File.ReadLines("./timestamps_" + Tournament + ".txt").ToList();
+
+                foreach (string l in lines)
+                {
+                    if (l.IndexOf(' ') != -1)
+                    {
+                        string oldTime = l.Substring(0, l.IndexOf(' '));
+                        TimeSpan parsedTime;
+
+                        if (oldTime.Length == 5)
+                            // Add 0 hour marker if necessary
+                            if (TimeSpan.TryParse("0:" + oldTime, CultureInfo.CurrentCulture, out parsedTime))
+                            {
+                                TimeSpan newTime = parsedTime + vodTime;
+
+                                if (newTime.TotalHours >= 1)
+                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                        newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                else
+                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                        newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                            }
+                            else
+                                // No timestamps found in this line, write it back as is
+                                File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                    l + "\n");
+
+                        else if (oldTime.Length == 8)
+                            // If hours are already there, parse the time as is
+                            if (TimeSpan.TryParse(oldTime, CultureInfo.CurrentCulture, out parsedTime))
+                            {
+                                TimeSpan newTime = parsedTime + vodTime;
+
+                                if (newTime.TotalHours >= 1)
+                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                        newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                else
+                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                        newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                            }
+                            else
+                                // No timestamps found in this line, write it back as is
+                                File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                                    l + "\n");
+
+                    }
+                    else
+                        // No timestamps found in this line, write it back as is
+                        File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
+                            l + "\n");
+                }
+            }
+        }
         #endregion
+
     }
 }

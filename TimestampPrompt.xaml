@@ -1,0 +1,27 @@
+﻿<Window x:Class="OverlayControl.TimestampPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OverlayControl"
+        mc:Ignorable="d" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight" Topmost="True" ResizeMode="NoResize" IsTabStop="False" WindowStyle="None" ContentRendered="prompt_ContentRendered">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Name="lblVodTime" Grid.Column="1">Enter the start time of the first match on the VOD.</Label>
+        <TextBox Name="txtVodTime" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="10,0,10,0"></TextBox>
+
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,10,0,10">
+            <Button IsCancel="True" MinWidth="60" Margin="0,0,10,0">Cancel</Button>
+            <Button IsDefault="True" Name="btnFinalize" Click="btnFinalize_Click" MinWidth="60" Margin="0,0,10,0">Finalize</Button>
+        </WrapPanel>
+    </Grid>
+</Window>
