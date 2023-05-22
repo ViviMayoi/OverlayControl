@@ -10,7 +10,8 @@
     <Grid>
         <Menu HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="634">
             <MenuItem Header="File">
-                <MenuItem Header="Finalize timestamps file" Click="mnuFinalizeTimestamps_Click"/>
+                <MenuItem x:Name="mnuFinalizeCurrent" Header="Finalize current tournament's timestamps" Click="mnuFinalizeCurrent_Click"/>
+                <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click"/>
             </MenuItem>
         </Menu>
         <Label x:Name="lblPlayer1" Content="P1:" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -28,7 +29,7 @@
         <TextBox x:Name="txtScore1" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap"
              VerticalAlignment="Top" Width="36" Margin="588,30,0,0" TabIndex="2"/>
 
-        <Label x:Name="lblPron1" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
+        <Label x:Name="lblPronouns1" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="2,60,0,0" Width="64" Height="26"/>
         <TextBox x:Name="txtPron1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
             VerticalAlignment="Top" Width="116" Margin="70,64,0,0" TabIndex="3" />

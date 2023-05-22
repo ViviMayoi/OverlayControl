@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using MeltyHook;
+using Microsoft.Win32;
 
 namespace OverlayControl
 {
@@ -188,22 +189,80 @@ namespace OverlayControl
         }
         #endregion
 
-        private void mnuFinalizeTimestamps_Click(object sender, RoutedEventArgs e)
+        #region Context menu items
+        private void mnuFinalizeCurrent_Click(object sender, RoutedEventArgs e)
         {
-            TimestampPrompt prompt = new TimestampPrompt();
+            // Prompt the user for the relevant timestamp
+            PromptTimestampDialog prompt = new PromptTimestampDialog();
+
             if (prompt.ShowDialog() == true)
             {
+                // Initialize and open save file dialog
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                    OverwritePrompt = true,
+                    FileName = "timestamps_" + Tournament + "_final.txt"
+                    
+                };
 
-                TimeSpan parsedTime;
-                if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
-                    finalizeTimestamps(parsedTime);
-                // Add 0 hour marker if necessary
-                else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
-                    finalizeTimestamps(parsedTime);
-                else
-                    MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    // Parse the time and save new file
+                    if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out TimeSpan parsedTime))
+                        finalizeTimestamps(parsedTime, saveFileDialog.FileName);
+
+                    // Add 0 hour marker if necessary
+                    else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
+                        finalizeTimestamps(parsedTime, saveFileDialog.FileName);
+                    else
+                        MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+                }
             }
         }
+
+        private void mnuBrowseTimestamps_Click(object sender, RoutedEventArgs e)
+        {
+            // Open file browser
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                FileName = "timestamps_" + Tournament + ".txt"
+            };
+            if(openFileDialog.ShowDialog() == true)
+            {
+                // Prompt the user for the relevant timestamp
+                PromptTimestampDialog prompt = new PromptTimestampDialog();
+
+                if (prompt.ShowDialog() == true)
+                {
+                    // Set up and open save file dialog
+                    SaveFileDialog saveFileDialog = new SaveFileDialog
+                    {
+                        Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                        OverwritePrompt = true,
+                        FileName = "timestamps_" + Tournament + "_final.txt"
+                    };
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        // Parse the time and save new file
+                        if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out TimeSpan parsedTime))
+                            finalizeTimestamps(parsedTime, openFileDialog.FileName, saveFileDialog.FileName);
+                        // Add 0 hour marker if necessary
+                        else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
+                            finalizeTimestamps(parsedTime, openFileDialog.FileName, saveFileDialog.FileName);
+                        else
+                            MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+                    }
+                }
+            }
+
+
+        }
+
+
+        #endregion
         #endregion
 
         #region Main methods
@@ -417,12 +476,17 @@ namespace OverlayControl
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
 
-        private void finalizeTimestamps(TimeSpan vodTime)
+        private void finalizeTimestamps(TimeSpan vodTime, string saveFileName)
         {
-            if (File.Exists("./timestamps_" + Tournament + ".txt"))
+            finalizeTimestamps(vodTime, "./timestamps_" + Tournament + ".txt", saveFileName);
+        }
+
+        private void finalizeTimestamps(TimeSpan vodTime, string openFileName, string saveFileName)
+        {
+            if (File.Exists(openFileName))
             {
                 // Separate the lines
-                List<string> lines = File.ReadLines("./timestamps_" + Tournament + ".txt").ToList();
+                List<string> lines = File.ReadLines(openFileName).ToList();
 
                 foreach (string l in lines)
                 {
@@ -438,16 +502,13 @@ namespace OverlayControl
                                 TimeSpan newTime = parsedTime + vodTime;
 
                                 if (newTime.TotalHours >= 1)
-                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                        newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
                                 else
-                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                        newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
                             }
                             else
                                 // No timestamps found in this line, write it back as is
-                                File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                    l + "\n");
+                                File.AppendAllText(saveFileName, l + "\n");
 
                         else if (oldTime.Length == 8)
                             // If hours are already there, parse the time as is
@@ -456,26 +517,21 @@ namespace OverlayControl
                                 TimeSpan newTime = parsedTime + vodTime;
 
                                 if (newTime.TotalHours >= 1)
-                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                        newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
                                 else
-                                    File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                        newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
                             }
                             else
                                 // No timestamps found in this line, write it back as is
-                                File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                                    l + "\n");
+                                File.AppendAllText(saveFileName, l + "\n");
 
                     }
                     else
                         // No timestamps found in this line, write it back as is
-                        File.AppendAllText("./timestamps_" + Tournament + "_final.txt",
-                            l + "\n");
+                        File.AppendAllText(saveFileName, l + "\n");
                 }
             }
         }
         #endregion
-
     }
 }

@@ -3,11 +3,11 @@ using System.Windows;
 
 namespace OverlayControl
 {
-    public partial class TimestampPrompt : Window
+    public partial class PromptTimestampDialog : Window
     {
         public string GivenTime { get => txtVodTime.Text; }
 
-        public TimestampPrompt()
+        public PromptTimestampDialog()
         {
             InitializeComponent();
         }
