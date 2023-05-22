@@ -114,7 +114,7 @@ namespace OverlayControl
         #endregion
 
         #region Buttons
-        private void btnImages_Click(object sender, RoutedEventArgs e)
+        private void btnShowImages_Click(object sender, RoutedEventArgs e)
         {
             // Update images
             if (cmbChar1.Text != "")
@@ -126,7 +126,27 @@ namespace OverlayControl
             if (this._visuals.IsVisible)
                 return;
 
+
             _visuals.Show();
+        }
+        private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            // Update every part of the overlay
+            File.WriteAllText("./player1.txt", txtPlayer1.Text);
+            File.WriteAllText("./player2.txt", txtPlayer2.Text);
+            File.WriteAllText("./player1_grands.txt", (bool)chkLosersSide1.IsChecked ? txtPlayer1.Text + " [L]" : txtPlayer1.Text);
+            File.WriteAllText("./player2_grands.txt", (bool)chkLosersSide2.IsChecked ? txtPlayer2.Text + " [L]" : txtPlayer2.Text);
+            File.WriteAllText("./sponsor1.txt", txtSponsor1.Text);
+            File.WriteAllText("./sponsor2.txt", txtSponsor2.Text);
+            File.WriteAllText("./pronouns1.txt", txtPronouns1.Text);
+            File.WriteAllText("./pronouns2.txt", txtPronouns2.Text);
+            File.WriteAllText("./round.txt", txtRound.Text);
+            File.WriteAllText("./commentary.txt", txtCommentary.Text);
+            File.WriteAllText("./tournament.txt", txtTournament.Text);
+            File.WriteAllText("./matchcount.txt", cmbMatchCount.Text.Trim() + ' ' + txtMatchCount.Text);
+
+            updateScores();
+            updateCutIns();
         }
 
         private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
@@ -151,37 +171,22 @@ namespace OverlayControl
             this.txtScore1.Text = this.txtScore2.Text;
             this.txtScore2.Text = score;
 
-            string pronouns = this.txtPron1.Text;
-            this.txtPron1.Text = this.txtPron2.Text;
-            this.txtPron2.Text = pronouns;
+            string pronouns = this.txtPronouns1.Text;
+            this.txtPronouns1.Text = this.txtPronouns2.Text;
+            this.txtPronouns2.Text = pronouns;
 
             object country = this.cmbCountry1.SelectedItem;
             this.cmbCountry1.SelectedItem = this.cmbCountry2.SelectedItem;
             this.cmbCountry2.SelectedItem = country;
         }
-
-        private void btnHookToMelty_Click(object sender, RoutedEventArgs e) => hookToMelty();
-
-
-        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e) => _hook.SwapActiveProcess();
-
-        private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
+        private void btnResetScores_Click(object sender, RoutedEventArgs e)
         {
-            // Update every part of the overlay
-            File.WriteAllText("./player1.txt", this.txtPlayer1.Text);
-            File.WriteAllText("./player2.txt", this.txtPlayer2.Text);
-            File.WriteAllText("./sponsor1.txt", this.txtSponsor1.Text);
-            File.WriteAllText("./sponsor2.txt", this.txtSponsor2.Text);
-            File.WriteAllText("./pronouns1.txt", this.txtPron1.Text);
-            File.WriteAllText("./pronouns2.txt", this.txtPron2.Text);
-            File.WriteAllText("./round.txt", this.txtRound.Text);
-            File.WriteAllText("./commentary.txt", this.txtCommentary.Text);
-            File.WriteAllText("./tournament.txt", this.txtTournament.Text);
-            File.WriteAllText("./matchcount.txt", this.cmbMatchCount.Text.Trim() + ' ' + this.txtMatchCount.Text);
-
-            updateScores();
-            updateCutIns();
+            txtScore1.Text = "0";
+            txtScore2.Text = "0";
         }
+
+        private void btnHookToMBAACC_Click(object sender, RoutedEventArgs e) => hookToMelty();
+        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e) => _hook.SwapActiveProcess();
         #endregion
 
         #region Context menu items
@@ -310,7 +315,7 @@ namespace OverlayControl
                 int lastIntroState = 2;
 
                 // Update button description
-                btnHookToMelty.Content = "Unhook from MBAACC";
+                btnHookToMBAACC.Content = "Unhook from MBAACC";
 
                 // Thread that voids the current stream info when the game closes
                 Task.Factory.StartNew(() =>
@@ -440,7 +445,7 @@ namespace OverlayControl
             // Turning the hook loop off
             {
                 // Update button description
-                btnHookToMelty.Content = "Hook to MBAACC";
+                btnHookToMBAACC.Content = "Hook to MBAACC";
             }
         }
 
@@ -574,9 +579,5 @@ namespace OverlayControl
         }
 
         #endregion
-
-
-
-
     }
 }
