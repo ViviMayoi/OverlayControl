@@ -93,7 +93,7 @@
 
         <Button Click="btnImages_Click" x:Name="btnImages" Content="Show Images"
             VerticalAlignment="Top" Margin="312,188,0,0" Height="22" IsTabStop="False" HorizontalAlignment="Left" Width="100" Focusable="False" />
-        <Button Click="btnSwap_Click" x:Name="btnSwap" Content="Swap Players" VerticalAlignment="Top" Margin="418,188,0,0"
+        <Button Click="btnSwapPlayers_Click" x:Name="btnSwap" Content="Swap Players" VerticalAlignment="Top" Margin="418,188,0,0"
             Height="22" HorizontalAlignment="Left" Width="100" IsTabStop="False" Focusable="False" />
         <Button Click="btnUpdateOverlay_Click" x:Name="btnUpdate" Content="Update Layout" VerticalAlignment="Top"
             Margin="524,188,0,0" Height="22" IsTabStop="False" HorizontalAlignment="Left" Width="100" Focusable="False" />

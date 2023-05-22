@@ -87,8 +87,6 @@ namespace OverlayControl
         private readonly MeltyBlood _hook = new MeltyBlood();
         private bool _isLooping = false;
 
-        private int _scoreTotal1 = 0;
-        private int _scoreTotal2 = 0;
         private int _scoreCurrent1 = 0;
         private int _scoreCurrent2 = 0;
         #endregion
@@ -131,7 +129,7 @@ namespace OverlayControl
             _visuals.Show();
         }
 
-        private void btnSwap_Click(object sender, RoutedEventArgs e)
+        private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
         {
             string sponsor = this.txtSponsor1.Text;
             this.txtSponsor1.Text = this.txtSponsor2.Text;
@@ -162,15 +160,10 @@ namespace OverlayControl
             this.cmbCountry2.SelectedItem = country;
         }
 
-        private void btnHookToMelty_Click(object sender, RoutedEventArgs e)
-        {
-            hookToMelty();
-        }
+        private void btnHookToMelty_Click(object sender, RoutedEventArgs e) => hookToMelty();
 
-        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e)
-        {
-            _hook.SwapActiveProcess();
-        }
+
+        private void btnSwitchProcess_Click(object sender, RoutedEventArgs e) => _hook.SwapActiveProcess();
 
         private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
         {
@@ -259,11 +252,7 @@ namespace OverlayControl
                     }
                 }
             }
-
-
         }
-
-
         #endregion
 
         #region Text Boxes
@@ -309,12 +298,13 @@ namespace OverlayControl
         {
             // Change to opposite state
             _isLooping = !_isLooping;
-
             if (_isLooping)
             // Turning the hook loop on
             {
+                bool isFirstLoop = true;
+
                 // Initialize intro state
-                // This variable will be set every frame to the current value found in MBAACCé
+                // This variable will be set every frame to the current value found in MBAACC
                 // Possible values are 2 (during character intros), 1 (pre-round movement) and 0 (during the round proper).
                 // When it turns to 1, the match has started for timestamp purposes.
                 int lastIntroState = 2;
@@ -327,35 +317,33 @@ namespace OverlayControl
                 {
                     while (_isLooping)
                     {
-                    // Verify if Melty is there 
-                    if (!_hook.SearchForMelty())
+                        // Verify if Melty is there 
+                        if (!_hook.SearchForMelty())
                         {
-                        // If no Melty is found, clear the cut-ins and scores
-                        if (!_hook.GetMB())
+                            // If no Melty is found, clear the cut-ins and scores
+                            if (!_hook.GetMB())
                             {
-                                this.Dispatcher.Invoke(() => cmbChar1.Text = "Random");
-                                this.Dispatcher.Invoke(() => cmbChar2.Text = "Random");
-                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
-                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
-                                this.Dispatcher.Invoke(() => updateCutIns());
+                                Dispatcher.Invoke(() => cmbChar1.Text = "Random");
+                                Dispatcher.Invoke(() => cmbChar2.Text = "Random");
+                                Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
+                                Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
+                                Dispatcher.Invoke(() => updateCutIns());
 
                                 _scoreCurrent1 = 0;
                                 _scoreCurrent2 = 0;
-                                _scoreTotal1 = 0;
-                                _scoreTotal2 = 0;
                             }
 
-                        // If a Melty is found, set the scores visually back to 0
-                        else
+                            // If a Melty is found, set the scores visually back to 0
+                            else
                             {
-                                this.Dispatcher.Invoke(() => txtScore1.Text = "0");
-                                this.Dispatcher.Invoke(() => txtScore2.Text = "0");
-                                this.Dispatcher.Invoke(() => updateScores());
+                                Dispatcher.Invoke(() => txtScore1.Text = "0");
+                                Dispatcher.Invoke(() => txtScore2.Text = "0");
+                                Dispatcher.Invoke(() => updateScores());
                             }
                         }
 
-                    // Loop every second
-                    System.Threading.Thread.Sleep(1000);
+                        // Loop every second
+                        System.Threading.Thread.Sleep(1000);
                     }
                 });
 
@@ -364,11 +352,11 @@ namespace OverlayControl
                 {
                     while (_isLooping)
                     {
-                    // Verify if Melty is there 
-                    if (_hook.SearchForMelty())
+                        // Verify if Melty is there 
+                        if (_hook.SearchForMelty())
                         {
-                        // Read from Melty's memory
-                        bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
+                            // Read from Melty's memory
+                            bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
                             bool select2 = _hook.ReadMem((int)MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] >= 1;
                             string char1 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
                             string char2 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
@@ -377,60 +365,73 @@ namespace OverlayControl
                             int score1 = _hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0];
                             int score2 = _hook.ReadMem((int)MeltyMem.CC_P2_SCORE_ADDR, 1)[0];
 
-                        // Update the cut-ins
-                        if (char1 != null && char1.Length > 1)
-                                this.Dispatcher.Invoke(() => cmbChar1.Text = char1);
+                            // Update the cut-ins
+                            if (char1 != null && char1.Length > 1)
+                                Dispatcher.Invoke(() => cmbChar1.Text = char1);
                             else
-                                this.Dispatcher.Invoke(() => cmbChar1.Text = "Null");
+                                Dispatcher.Invoke(() => cmbChar1.Text = "Null");
 
                             if (char2 != null && char2.Length > 1)
-                                this.Dispatcher.Invoke(() => cmbChar2.Text = char2);
+                                Dispatcher.Invoke(() => cmbChar2.Text = char2);
                             else
-                                this.Dispatcher.Invoke(() => cmbChar2.Text = "Null");
+                                Dispatcher.Invoke(() => cmbChar2.Text = "Null");
 
                             if (moon1 != null && moon1.Length > 1 && select1)
-                                this.Dispatcher.Invoke(() => cmbMoon1.Text = moon1);
+                                Dispatcher.Invoke(() => cmbMoon1.Text = moon1);
                             else
-                                this.Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
+                                Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
 
                             if (moon2 != null && moon2.Length > 1 && select2)
-                                this.Dispatcher.Invoke(() => cmbMoon2.Text = moon2);
+                                Dispatcher.Invoke(() => cmbMoon2.Text = moon2);
                             else
-                                this.Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
+                                Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
 
-                            this.Dispatcher.Invoke(() => updateCutIns());
+                            Dispatcher.Invoke(() => updateCutIns());
 
-                        // Update the scores if necessary
-                        if (score1 > _scoreCurrent1)
+                            // If this is the first loop, make sure the score is caught up to the in-game one
+                            // It can be manually edited after the fact if in-game score is not accurate to the set count
+                            if (isFirstLoop)
                             {
-                                _scoreTotal1++;
-                                this.Dispatcher.Invoke(() => txtScore1.Text = _scoreTotal1.ToString());
-                                this.Dispatcher.Invoke(() => updateScores());
-                            }
-                            if (score2 > _scoreCurrent2)
-                            {
-                                _scoreTotal2++;
-                                this.Dispatcher.Invoke(() => txtScore2.Text = _scoreTotal2.ToString());
-                                this.Dispatcher.Invoke(() => updateScores());
+                                isFirstLoop = false;
+
+                                Dispatcher.Invoke(() => txtScore1.Text = score1.ToString());
+                                Dispatcher.Invoke(() => txtScore2.Text = score2.ToString());
+                                Dispatcher.Invoke(() => updateScores());
                             }
 
-                        // Update the app's score counter
-                        _scoreCurrent1 = score1;
+                            else
+                            {
+                                // Update the scores if necessary
+                                if (score1 > _scoreCurrent1)
+                                {
+                                    Dispatcher.Invoke(() => txtScore1.Text = (int.Parse(txtScore1.Text) + 1).ToString());
+                                    Dispatcher.Invoke(() => updateScores());
+                                }
+                                if (score2 > _scoreCurrent2)
+                                {
+                                    Dispatcher.Invoke(() => txtScore2.Text = (int.Parse(txtScore2.Text) + 1).ToString());
+                                    Dispatcher.Invoke(() => updateScores());
+                                }
+                            }
+
+
+                            // Update the app's score counter
+                            _scoreCurrent1 = score1;
                             _scoreCurrent2 = score2;
 
-                        // Check if a new match is starting
-                        int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
+                            // Check if a new match is starting
+                            int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
                             if (lastIntroState != currentIntroState)
                             {
                                 lastIntroState = currentIntroState;
                                 if (lastIntroState == 1)
-                                    this.Dispatcher.Invoke(new Action(() => manageTimestamp()));
+                                    Dispatcher.Invoke(new Action(() => manageTimestamp()));
                             }
 
                         }
 
-                    // Run this once per in-game frame 
-                    System.Threading.Thread.Sleep(16);
+                        // Run this once per in-game frame 
+                        System.Threading.Thread.Sleep(16);
                     }
                 });
             }
