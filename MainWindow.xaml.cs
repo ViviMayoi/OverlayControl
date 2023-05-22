@@ -94,6 +94,7 @@ namespace OverlayControl
         #endregion
 
         #region Interface
+        #region Window
         public MainWindow()
         {
             this.InitializeComponent();
@@ -112,6 +113,7 @@ namespace OverlayControl
             MainWindow.IsClosing = true;
             this._visuals.Close();
         }
+        #endregion
 
         #region Buttons
         private void btnImages_Click(object sender, RoutedEventArgs e)
@@ -203,7 +205,6 @@ namespace OverlayControl
                     Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
                     OverwritePrompt = true,
                     FileName = "timestamps_" + Tournament + "_final.txt"
-                    
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
@@ -223,20 +224,21 @@ namespace OverlayControl
 
         private void mnuBrowseTimestamps_Click(object sender, RoutedEventArgs e)
         {
-            // Open file browser
+            // Initialize file browser
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
                 FileName = "timestamps_" + Tournament + ".txt"
             };
-            if(openFileDialog.ShowDialog() == true)
+
+            if (openFileDialog.ShowDialog() == true)
             {
-                // Prompt the user for the relevant timestamp
+                // Once a file is selected, prompt the user for the relevant timestamp
                 PromptTimestampDialog prompt = new PromptTimestampDialog();
 
                 if (prompt.ShowDialog() == true)
                 {
-                    // Set up and open save file dialog
+                    // Initialize and open save file dialog
                     SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
@@ -263,9 +265,46 @@ namespace OverlayControl
 
 
         #endregion
+
+        #region Text Boxes
+        // Only allow numbers in score and match count text boxes
+
+        // Manually typed text
+        private void txtNumber_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e) =>
+            e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
+
+        // Pasted text
+        private void txtNumber_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            // Check if data is a string
+            if (e.DataObject.GetDataPresent(typeof(string)))
+            {
+                // Check if the data string only contains numbers; if not, cancel
+                if (new Regex("[^0-9]+").IsMatch((string)e.DataObject.GetData(typeof(string))))
+                    e.CancelCommand();
+            }
+            // If data is not a string, cancel paste
+            else
+                e.CancelCommand();
+        }
+
+        // Dragged-down text
+        private void txtNumber_PreviewDragEnter(object sender, DragEventArgs e)
+        {
+            // Check if data is a string
+            if (e.Data.GetDataPresent(typeof(string)))
+            {
+                // Check if the data string only contains numbers; if not, cancel
+                e.Handled = new Regex("[^0-9]+").IsMatch((string)e.Data.GetData(typeof(string)));
+            }
+            // If data is not a string, cancel drag-down
+            else
+                e.Handled = true;
+        }
+        #endregion
         #endregion
 
-        #region Main methods
+        #region Logic
         private void hookToMelty()
         {
             // Change to opposite state
@@ -282,31 +321,32 @@ namespace OverlayControl
 
                 // Update button description
                 btnHookToMelty.Content = "Unhook from MBAACC";
-                //btnHookToMelty.FontSize = 10;
 
                 // Thread that voids the current stream info when the game closes
                 Task.Factory.StartNew(() =>
                 {
                     while (_isLooping)
                     {
-                        // Verify if Melty is there 
-                        if (!_hook.SearchForMelty())
+                    // Verify if Melty is there 
+                    if (!_hook.SearchForMelty())
                         {
-                            // If no Melty is found, clear the cut-ins and scores
-                            if (!_hook.GetMB())
+                        // If no Melty is found, clear the cut-ins and scores
+                        if (!_hook.GetMB())
                             {
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = "Random");
                                 this.Dispatcher.Invoke(() => cmbChar2.Text = "Random");
                                 this.Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
                                 this.Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
                                 this.Dispatcher.Invoke(() => updateCutIns());
+
                                 _scoreCurrent1 = 0;
                                 _scoreCurrent2 = 0;
                                 _scoreTotal1 = 0;
                                 _scoreTotal2 = 0;
                             }
-                            // If a Melty is found, set the scores visually back to 0
-                            else
+
+                        // If a Melty is found, set the scores visually back to 0
+                        else
                             {
                                 this.Dispatcher.Invoke(() => txtScore1.Text = "0");
                                 this.Dispatcher.Invoke(() => txtScore2.Text = "0");
@@ -314,8 +354,8 @@ namespace OverlayControl
                             }
                         }
 
-                        // Loop every second
-                        System.Threading.Thread.Sleep(1000);
+                    // Loop every second
+                    System.Threading.Thread.Sleep(1000);
                     }
                 });
 
@@ -324,11 +364,11 @@ namespace OverlayControl
                 {
                     while (_isLooping)
                     {
-                        // Verify if Melty is there 
-                        if (_hook.SearchForMelty())
+                    // Verify if Melty is there 
+                    if (_hook.SearchForMelty())
                         {
-                            // Read from Melty's memory
-                            bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
+                        // Read from Melty's memory
+                        bool select1 = _hook.ReadMem((int)MeltyMem.CC_P1_SELECTOR_MODE_ADDR, 1)[0] >= 1;
                             bool select2 = _hook.ReadMem((int)MeltyMem.CC_P2_SELECTOR_MODE_ADDR, 1)[0] >= 1;
                             string char1 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P1_CHARACTER_ADDR, 1)[0]];
                             string char2 = _hook.CharacterNames[(Int32)NameType.Short][_hook.ReadMem((int)MeltyMem.CC_P2_CHARACTER_ADDR, 1)[0]];
@@ -337,8 +377,8 @@ namespace OverlayControl
                             int score1 = _hook.ReadMem((int)MeltyMem.CC_P1_SCORE_ADDR, 1)[0];
                             int score2 = _hook.ReadMem((int)MeltyMem.CC_P2_SCORE_ADDR, 1)[0];
 
-                            // Update the cut-ins
-                            if (char1 != null && char1.Length > 1)
+                        // Update the cut-ins
+                        if (char1 != null && char1.Length > 1)
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = char1);
                             else
                                 this.Dispatcher.Invoke(() => cmbChar1.Text = "Null");
@@ -360,8 +400,8 @@ namespace OverlayControl
 
                             this.Dispatcher.Invoke(() => updateCutIns());
 
-                            // Update the scores if necessary
-                            if (score1 > _scoreCurrent1)
+                        // Update the scores if necessary
+                        if (score1 > _scoreCurrent1)
                             {
                                 _scoreTotal1++;
                                 this.Dispatcher.Invoke(() => txtScore1.Text = _scoreTotal1.ToString());
@@ -374,12 +414,12 @@ namespace OverlayControl
                                 this.Dispatcher.Invoke(() => updateScores());
                             }
 
-                            // Update the app's score counter
-                            _scoreCurrent1 = score1;
+                        // Update the app's score counter
+                        _scoreCurrent1 = score1;
                             _scoreCurrent2 = score2;
 
-                            // Check if a new match is starting
-                            int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
+                        // Check if a new match is starting
+                        int currentIntroState = _hook.ReadMem((int)MeltyMem.CC_INTRO_STATE_ADDR, 1)[0];
                             if (lastIntroState != currentIntroState)
                             {
                                 lastIntroState = currentIntroState;
@@ -389,8 +429,8 @@ namespace OverlayControl
 
                         }
 
-                        // Run this once per in-game frame 
-                        System.Threading.Thread.Sleep(16);
+                    // Run this once per in-game frame 
+                    System.Threading.Thread.Sleep(16);
                     }
                 });
             }
@@ -400,7 +440,6 @@ namespace OverlayControl
             {
                 // Update button description
                 btnHookToMelty.Content = "Hook to MBAACC";
-                //btnHookToMelty.FontSize = 12;
             }
         }
 
@@ -476,10 +515,10 @@ namespace OverlayControl
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
 
-        private void finalizeTimestamps(TimeSpan vodTime, string saveFileName)
-        {
+        private void finalizeTimestamps(TimeSpan vodTime, string saveFileName) =>
+            // Call overloaded method with default file name
             finalizeTimestamps(vodTime, "./timestamps_" + Tournament + ".txt", saveFileName);
-        }
+
 
         private void finalizeTimestamps(TimeSpan vodTime, string openFileName, string saveFileName)
         {
@@ -532,6 +571,11 @@ namespace OverlayControl
                 }
             }
         }
+
         #endregion
+
+
+
+
     }
 }

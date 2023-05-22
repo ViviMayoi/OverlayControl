@@ -9,16 +9,19 @@
         ResizeMode="CanMinimize">
     <Grid>
         <Menu HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="634">
-            <MenuItem Header="File">
+            <MenuItem Header="Timestamps">
                 <MenuItem x:Name="mnuFinalizeCurrent" Header="Finalize current tournament's timestamps" Click="mnuFinalizeCurrent_Click"/>
                 <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click"/>
+            </MenuItem>
+            <MenuItem Header="Sets">
+                <MenuItem x:Name="mnuResetScores" Header="Reset scores on game close" IsCheckable="True"/>
             </MenuItem>
         </Menu>
         <Label x:Name="lblPlayer1" Content="P1:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="2,26,0,0" Width="26" Height="26"/>
-        <TextBox x:Name="txtSponsor1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtSponsor1" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
             VerticalAlignment="Top" Width="110" Margin="28,30,0,0" TabIndex="0" />
-        <TextBox x:Name="txtPlayer1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtPlayer1" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
              VerticalAlignment="Top" Width="112" Margin="144,30,0,0"  TabIndex="1"/>
         <Label x:Name="lblCharacter1" Content="Character:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="262,30,0,0" Width="64" Height="26"/>
@@ -26,12 +29,13 @@
               Margin="326,30,0,0" Height="26" IsTabStop="False" />
         <ComboBox x:Name="cmbMoon1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="506,30,0,0"
               Height="26" IsTabStop="False"/>
-        <TextBox x:Name="txtScore1" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap"
-             VerticalAlignment="Top" Width="36" Margin="588,30,0,0" TabIndex="2"/>
+        <TextBox x:Name="txtScore1" HorizontalAlignment="Left" Height="26" TextWrapping="NoWrap"
+             VerticalAlignment="Top" Width="36" Margin="588,30,0,0" TabIndex="2" 
+             PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
 
         <Label x:Name="lblPronouns1" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="2,60,0,0" Width="64" Height="26"/>
-        <TextBox x:Name="txtPron1" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtPron1" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
             VerticalAlignment="Top" Width="116" Margin="70,64,0,0" TabIndex="3" />
         <Label x:Name="lblCountry1" Content="Country:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="190,60,0,0" Width="66" Height="26"/>
@@ -41,9 +45,9 @@
 
         <Label x:Name="lblPlayer2" Content="P2:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="2,94,0,0" Width="26" Height="24"/>
-        <TextBox x:Name="txtSponsor2" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap"
+        <TextBox x:Name="txtSponsor2" HorizontalAlignment="Left" Height="24" TextWrapping="NoWrap"
             VerticalAlignment="Top" Width="110" Margin="28,94,0,0" TabIndex="4" />
-        <TextBox x:Name="txtPlayer2" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap"
+        <TextBox x:Name="txtPlayer2" HorizontalAlignment="Left" Height="24" TextWrapping="NoWrap"
              VerticalAlignment="Top" Width="112" Margin="144,94,0,0" TabIndex="5" />
         <Label x:Name="lblCharacter2" Content="Character:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="262,94,0,0" Width="64" Height="26"/>
@@ -51,12 +55,13 @@
               Margin="326,94,0,0" Height="24" IsTabStop="False" />
         <ComboBox x:Name="cmbMoon2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76" Margin="506,94,0,0"
               Height="24" IsTabStop="False" />
-        <TextBox x:Name="txtScore2" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap"
-             VerticalAlignment="Top" Width="36" Margin="588,94,0,0" TabIndex="6" />
+        <TextBox x:Name="txtScore2" HorizontalAlignment="Left" Height="24" TextWrapping="NoWrap"
+             VerticalAlignment="Top" Width="36" Margin="588,94,0,0" TabIndex="6" 
+             PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter" />
 
         <Label x:Name="lblPron2" Content="Pronouns:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="2,124,0,0" Width="64" Height="26"/>
-        <TextBox x:Name="txtPron2" HorizontalAlignment="Left" Height="24" TextWrapping="Wrap"
+        <TextBox x:Name="txtPron2" HorizontalAlignment="Left" Height="24" TextWrapping="NoWrap"
             VerticalAlignment="Top" Width="116" Margin="70,126,0,0" TabIndex="7" />
         <Label x:Name="lblCountry2" Content="Country:" HorizontalAlignment="Left" VerticalAlignment="Top"
             Margin="190,124,0,0" Width="66" Height="26"/>
@@ -65,24 +70,25 @@
 
         <Label x:Name="lblTournament" Content="Tournament:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="2,156,0,0" Width="76" Height="26"/>
-        <TextBox x:Name="txtTournament" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtTournament" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
              VerticalAlignment="Top" Width="230" Margin="78,160,0,0" TabIndex="8"/>
 
         <Label x:Name="lblRound" Content="Round:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="2,184,0,0" Width="50" Height="26"/>
-        <TextBox x:Name="txtRound" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtRound" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
              VerticalAlignment="Top" Width="146" Margin="52,188,0,0" TabIndex="9" />
         <ComboBox x:Name="cmbMatchCount" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" Margin="202,188,0,0" Height="22" IsTextSearchEnabled="False" SelectedIndex="0" IsTabStop="False" IsEditable="True" IsSynchronizedWithCurrentItem="True">
             <ComboBoxItem Content="First to" IsSelected="True"/>
             <ComboBoxItem Content="Best of"/>
             <ComboBoxItem Content=""/>
         </ComboBox>
-        <TextBox x:Name="txtMatchCount" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
-            VerticalAlignment="Top" Width="36" Margin="272,188,0,0" TabIndex="10" UndoLimit="10" />
+        <TextBox x:Name="txtMatchCount" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
+            VerticalAlignment="Top" Width="36" Margin="272,188,0,0" TabIndex="10" UndoLimit="10" 
+            PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
 
         <Label x:Name="lblCommentary" Content="Commentary:" HorizontalAlignment="Left" VerticalAlignment="Top"
            Margin="2,212,0,0" Width="90" Height="26"/>
-        <TextBox x:Name="txtCommentary" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap"
+        <TextBox x:Name="txtCommentary" HorizontalAlignment="Left" Height="22" TextWrapping="NoWrap"
              VerticalAlignment="Top" Width="222" Margin="86,216,0,0" TabIndex="11" />
 
         <Button Click="btnImages_Click" x:Name="btnImages" Content="Show Images"
