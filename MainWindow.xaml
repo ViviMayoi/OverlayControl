@@ -13,8 +13,9 @@
                 <MenuItem x:Name="mnuFinalizeCurrent" Header="Finalize current tournament's timestamps" Click="mnuFinalizeCurrent_Click"/>
                 <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click"/>
             </MenuItem>
-            <MenuItem Header="Sets">
+            <MenuItem Header="Preferences">
                 <MenuItem x:Name="mnuResetScores" Header="Reset scores on game close" IsCheckable="True"/>
+                <MenuItem x:Name="mnuCatchScoreUp" Header="Catch score up when initially hooking to game" IsCheckable="True"/>
             </MenuItem>
         </Menu>
         <Label x:Name="lblPlayer1" Content="P1:" HorizontalAlignment="Left" VerticalAlignment="Top"
