@@ -14,6 +14,9 @@ using Microsoft.Win32;
 
 namespace OverlayControl
 {
+    /// <summary>
+    /// Main window for the OverlayControl application.
+    /// </summary>
     public partial class MainWindow : Window, IComponentConnector
     {
         #region Properties
@@ -97,7 +100,7 @@ namespace OverlayControl
         #endregion
 
         #region Private variables
-        private readonly OverlayVisuals _visuals = new OverlayVisuals(new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
+        private readonly VisualsWindow _visuals = new VisualsWindow(new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
             new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood _hook = new MeltyBlood();
@@ -110,6 +113,10 @@ namespace OverlayControl
 
         #region Interface
         #region Window
+
+        /// <summary>
+        /// Constructor for the application's main window.
+        /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
@@ -123,6 +130,11 @@ namespace OverlayControl
             this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
         }
 
+        /// <summary>
+        /// Cancelable event invoked when attempting to close the application's main window.
+        /// </summary>
+        /// <param name="sender">The control that was used to invoke this event.</param>
+        /// <param name="e">Provides data for the cancelable event.</param>
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (CurrentMatch != null)
@@ -146,6 +158,11 @@ namespace OverlayControl
         #endregion
 
         #region Buttons
+        /// <summary>
+        /// Event invoked when button btnShowImages is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnShowImages_Click(object sender, RoutedEventArgs e)
         {
             // Update images
@@ -161,6 +178,12 @@ namespace OverlayControl
 
             _visuals.Show();
         }
+
+        /// <summary>
+        /// Event invoked when button btnUpdateOverlay is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
         {
             // Update every part of the overlay
@@ -181,6 +204,11 @@ namespace OverlayControl
             updateVisuals();
         }
 
+        /// <summary>
+        /// Event invoked when button btnSwapPlayers is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
         {
             string sponsor = this.txtSponsor1.Text;
@@ -211,13 +239,30 @@ namespace OverlayControl
             this.cmbCountry1.SelectedItem = this.cmbCountry2.SelectedItem;
             this.cmbCountry2.SelectedItem = country;
         }
+
+        /// <summary>
+        /// Event invoked when button btnResetScores is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnResetScores_Click(object sender, RoutedEventArgs e)
         {
             txtScore1.Text = "0";
             txtScore2.Text = "0";
         }
 
+        /// <summary>
+        /// Event invoked when button btnHookToMBAACC is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnHookToMBAACC_Click(object sender, RoutedEventArgs e) => hookToMelty();
+
+        /// <summary>
+        /// Event invoked when button btnSwitchProcess is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void btnSwitchProcess_Click(object sender, RoutedEventArgs e) => _hook.SwapActiveProcess();
         #endregion
 
@@ -325,11 +370,19 @@ namespace OverlayControl
         #region Text Boxes
         // Only allow numbers in score and match count text boxes
 
-        // Manually typed text
+        /// <summary>
+        /// Event invoked when a text box that should only contain numbers is typed into.
+        /// </summary>
+        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e) =>
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
 
-        // Pasted text
+        /// <summary>
+        /// Event invoked when a text box that should only contain numbers is pasted into.
+        /// </summary>
+        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             // Check if data is a string
@@ -344,7 +397,11 @@ namespace OverlayControl
                 e.CancelCommand();
         }
 
-        // Dragged-down text
+        /// <summary>
+        /// Event invoked when a text box that should only contain numbers has data dragged down into it via mouse.
+        /// </summary>
+        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_PreviewDragEnter(object sender, DragEventArgs e)
         {
             // Check if data is a string
@@ -361,9 +418,21 @@ namespace OverlayControl
         #endregion
 
         #region Logic
+        /// <summary>
+        /// Recalculates the timestamps saved in the current tournament's timestamp file, writing them to a new file chosen by the user.
+        /// </summary>
+        /// <param name="vodTime">Time inputted by the user, representing the start time of the first match of a tournament.</param>
+        /// <param name="saveFileName">Save file chosen by the user.</param>
         private void finalizeTimestamps(TimeSpan vodTime, string saveFileName) =>
             // Call overloaded method with default file name
             finalizeTimestamps(vodTime, "./timestamps_" + Tournament + ".txt", saveFileName);
+
+        /// <summary>
+        /// Recalculates the timestamps saved in the user's chosen timestamp file, writing them to a new file chosen by the user.
+        /// </summary>
+        /// <param name="vodTime">Time inputted by the user, representing the start time of the first match of a tournament.</param>
+        /// <param name="openFileName"></param>Timestamp file location chosen by the user.
+        /// <param name="saveFileName">Save file location chosen by the user.</param>
         private void finalizeTimestamps(TimeSpan vodTime, string openFileName, string saveFileName)
         {
             if (File.Exists(openFileName))
@@ -416,6 +485,9 @@ namespace OverlayControl
             }
         }
 
+        /// <summary>
+        /// Starts the threads containing OverlayControl's automatic detection of game state by hooking to MBAA.exe.
+        /// </summary>
         private void hookToMelty()
         {
             // Change to opposite state
@@ -566,6 +638,9 @@ namespace OverlayControl
             }
         }
 
+        /// <summary>
+        /// Detects the state of the Match currently held in memory and writes it into the timestamps file if a new match has begun.
+        /// </summary>
         private void manageCurrentMatch()
         {
             // Check if there is currently a match being tracked
@@ -607,7 +682,6 @@ namespace OverlayControl
             CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
         }
 
-
         /// <summary>
         /// Saves the current active Match to the tournament's timestamps file.
         /// </summary>
@@ -640,11 +714,18 @@ namespace OverlayControl
             catch { return false; }
         }
 
+        /// <summary>
+        /// Saves the scores currently entered in the score text boxes to the relevant .txt files.
+        /// </summary>
         private void updateScores()
         {
-            File.WriteAllText("./score1.txt", this.txtScore1.Text);
-            File.WriteAllText("./score2.txt", this.txtScore2.Text);
+            File.WriteAllText("./score1.txt", txtScore1.Text);
+            File.WriteAllText("./score2.txt", txtScore2.Text);
         }
+
+        /// <summary>
+        /// Updates the VisualsWindow window's image sources according to the characters, moon styles and country flags entered into the main window.
+        /// </summary>
         private void updateVisuals()
         {
             if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")

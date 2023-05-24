@@ -2,6 +2,9 @@
 
 namespace OverlayControl
 {
+    /// <summary>
+    /// Class representing a set being observed through meltyhook.
+    /// </summary>
     public class Match
     {
         #region Properties
@@ -13,7 +16,14 @@ namespace OverlayControl
         public System.DateTime StartTime { get; set; }
         #endregion
 
-        // Constructor
+        /// <summary>
+        /// Constructor for the Match class, representing a set being observed through meltyhook.
+        /// </summary>
+        /// <param name="p1">Player 1's tag.</param>
+        /// <param name="p2">Player 2's tag.</param>
+        /// <param name="c1">Player 1's chosen character and moon style.</param>
+        /// <param name="c2">Player 2's chosen character and moon style.</param>
+        /// <param name="r">Tournament round where the set is taking place.</param>
         public Match(string p1, string p2, string c1, string c2, string r)
         {
             Player1 = p1;
@@ -25,7 +35,12 @@ namespace OverlayControl
         }
 
         #region Public methods
-        // Check if given players are different to this match
+        /// <summary>
+        /// Checks if two given players are the same players as the ones recorded in this match.
+        /// </summary>
+        /// <param name="p1">Player 1's full tag (with sponsor tag).</param>
+        /// <param name="p2">Player 2's full tag (with sponsor tag).</param>
+        /// <returns>Whether or not the match contains different players.</returns>
         public bool IsNewMatch(string p1, string p2)
         {
             if (p1 == this.Player1 && p2 == this.Player2)
@@ -33,7 +48,12 @@ namespace OverlayControl
             return !(p2 == this.Player1) || !(p1 == this.Player2);
         }
 
-        // Check if submitted players are in a different position compared to this match
+        /// <summary>
+        /// Checks if two given players have changed the side they are playing on during the set.
+        /// </summary>
+        /// <param name="p1">Player 1's full tag (with sponsor tag).</param>
+        /// <param name="p2">Player 2's full tag (with sponsor tag).</param>
+        /// <returns>Whether or not the players have changed sides.</returns>
         public bool? IsReversed(string p1, string p2)
         {
             if (p1 == Player1 && p2 == Player2)
@@ -46,7 +66,10 @@ namespace OverlayControl
                 return null;
         }
 
-        // Used for timestamps
+        /// <summary>
+        /// Formats a Match object into a string containing the match's round name, both players' full tags (with sponsor tags), and their character and moon style choice(s).
+        /// </summary>
+        /// <returns>The formatted string.</returns>
         public override string ToString()
         {
             // Construct a string, starting with round and first player

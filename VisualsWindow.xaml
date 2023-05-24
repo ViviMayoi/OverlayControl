@@ -1,10 +1,10 @@
-<Window x:Class="OverlayControl.OverlayVisuals"
+<Window x:Class="OverlayControl.VisualsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OverlayControl"
-        Closing="wndCutIn_Closing" x:Name="wndCutIn" Title="OverlayControl Visuals" Height="768" Width="1030"
+        Closing="wndVisuals_Closing" x:Name="wndCutIn" Title="OverlayControl Visuals" Height="768" Width="1030"
         ResizeMode="NoResize" Background="Lime">
     <Grid>
         <Image x:Name="imgCutIn1" Height="512" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Left" Width="512" />

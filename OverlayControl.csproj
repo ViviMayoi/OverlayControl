@@ -83,7 +83,7 @@
     <Compile Include="PromptTimestampDialog.xaml.cs">
       <DependentUpon>PromptTimestampDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="OverlayVisuals.xaml">
+    <Page Include="VisualsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -95,8 +95,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OverlayVisuals.xaml.cs">
-      <DependentUpon>OverlayVisuals.xaml</DependentUpon>
+    <Compile Include="VisualsWindow.xaml.cs">
+      <DependentUpon>VisualsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

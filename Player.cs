@@ -1,6 +1,9 @@
 ﻿namespace OverlayControl
 {
-  public class Player
+    /// <summary>
+    /// Struct representing a player participating in a Match.
+    /// </summary>
+  public struct Player
   {
         #region Properties
         public string Tag { get; set; }
@@ -12,6 +15,9 @@
         public Countries Country { get; set; }
         #endregion
 
+        /// <summary>
+        /// Enum containing every element selectable in the Country combo boxes.
+        /// </summary>
         public enum Countries
         {
             Unknown = 0,
