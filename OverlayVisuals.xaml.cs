@@ -49,8 +49,7 @@ namespace OverlayControl
 
         private void wndCutIn_Closing(object sender, CancelEventArgs e)
         {
-            if (MainWindow.IsClosing)
-                return;
+            // Cancel manual closing of this window
             e.Cancel = true;
         }
     }

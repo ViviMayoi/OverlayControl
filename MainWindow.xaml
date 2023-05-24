@@ -8,9 +8,10 @@
         Closing="mainWindow_Closing" x:Name="mainWindow" Title="OverlayControl" SizeToContent="WidthAndHeight"
         ResizeMode="CanMinimize" Height="286" Width="667" >
     <Grid>
-
         <Menu HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="660">
             <MenuItem Header="Timestamps">
+                <MenuItem x:Name="mnuSaveCurrentMatch" Header="Save current match to file" Click="mnuSaveCurrentMatch_Click" IsEnabled="False"/>
+                <Separator></Separator>
                 <MenuItem x:Name="mnuFinalizeCurrent" Header="Finalize current tournament's timestamps" Click="mnuFinalizeCurrent_Click"/>
                 <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click"/>
             </MenuItem>

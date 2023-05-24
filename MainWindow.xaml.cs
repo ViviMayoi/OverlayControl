@@ -17,11 +17,27 @@ namespace OverlayControl
     public partial class MainWindow : Window, IComponentConnector
     {
         #region Properties
-        public static bool IsClosing = false;
         public static List<string> CharacterList = new List<string>();
         public static string[] CharacterArray = new string[0x64];
         public static List<string> Moons = new List<string>() { "Crescent", "Full", "Half", "Null" };
-        public Match CurrentMatch;
+        /// <summary>
+        /// The current match being tracked by OverlayControl and meltyhook.
+        /// </summary>
+        public Match CurrentMatch
+        {
+            get => _currentMatch;
+            set
+            {
+                _currentMatch = value;
+
+                // Disable the Save Current Match context menu item if the current match is null
+                if (value == null)
+                    mnuSaveCurrentMatch.IsEnabled = false;
+                // Enable the context menu item if the current match is being defined
+                else
+                    mnuSaveCurrentMatch.IsEnabled = true;
+            }
+        }
         #endregion
 
         #region String properties
@@ -85,8 +101,9 @@ namespace OverlayControl
             new BitmapImage(new Uri("cutins/Random.png", UriKind.Relative)), new BitmapImage(new Uri("moons/Null.png", UriKind.Relative)),
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood _hook = new MeltyBlood();
-        private bool _isLooping = false;
+        private Match _currentMatch = null;
 
+        private bool _isLooping = false;
         private int _scoreCurrent1 = 0;
         private int _scoreCurrent2 = 0;
         #endregion
@@ -108,8 +125,23 @@ namespace OverlayControl
 
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MainWindow.IsClosing = true;
-            this._visuals.Close();
+            if (CurrentMatch != null)
+            {
+                // Prompt the user to save the current match before closing
+                MessageBoxResult result = MessageBox.Show("There is a currently active match! Save to timestamps before exiting?",
+                    "Exit OverlayControl", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                    saveCurrentMatchToFile();
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            // Shutdown the application completely to close all of its windows
+            Application.Current.Shutdown();
         }
         #endregion
 
@@ -146,7 +178,7 @@ namespace OverlayControl
             File.WriteAllText("./matchcount.txt", cmbMatchCount.Text.Trim() + ' ' + txtMatchCount.Text);
 
             updateScores();
-            updateCutIns();
+            updateVisuals();
         }
 
         private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
@@ -190,6 +222,28 @@ namespace OverlayControl
         #endregion
 
         #region Context menu items
+        /// <summary>
+        /// Event invoked when context menu item mnuSaveCurrentMatch is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
+        private void mnuSaveCurrentMatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!saveCurrentMatchToFile())
+            {
+                MessageBox.Show("There is no currently active match. Match cannot be saved to file.",
+                    "Error trying to save match", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+
+            // Set CurrentMatch to null to prevent further tracking of the same match
+            CurrentMatch = null;
+        }
+
+        /// <summary>
+        /// Event invoked when context menu item mnuFinalizeCurrent is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void mnuFinalizeCurrent_Click(object sender, RoutedEventArgs e)
         {
             // Prompt the user for the relevant timestamp
@@ -215,11 +269,18 @@ namespace OverlayControl
                     else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
                         finalizeTimestamps(parsedTime, saveFileDialog.FileName);
                     else
-                        MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+                        MessageBox.Show("Error: ");
+                    MessageBox.Show("The inputted time was not in a valid format. Please enter the timestamp using the \"hh:mm:ss\" format.",
+                        "Error trying to read timestamp", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                 }
             }
         }
 
+        /// <summary>
+        /// Event invoked when context menu item mnuBrowseTimestamps is clicked.
+        /// </summary>
+        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
         private void mnuBrowseTimestamps_Click(object sender, RoutedEventArgs e)
         {
             // Initialize file browser
@@ -253,7 +314,8 @@ namespace OverlayControl
                         else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
                             finalizeTimestamps(parsedTime, openFileDialog.FileName, saveFileDialog.FileName);
                         else
-                            MessageBox.Show("Error: The given time was not in a valid format. Please double check!");
+                            MessageBox.Show("The inputted time was not in a valid format. Please enter the timestamp using the \"hh:mm:ss\" format.",
+                                "Error trying to read timestamp", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     }
                 }
             }
@@ -299,10 +361,66 @@ namespace OverlayControl
         #endregion
 
         #region Logic
+        private void finalizeTimestamps(TimeSpan vodTime, string saveFileName) =>
+            // Call overloaded method with default file name
+            finalizeTimestamps(vodTime, "./timestamps_" + Tournament + ".txt", saveFileName);
+        private void finalizeTimestamps(TimeSpan vodTime, string openFileName, string saveFileName)
+        {
+            if (File.Exists(openFileName))
+            {
+                // Separate the lines
+                List<string> lines = File.ReadLines(openFileName).ToList();
+
+                foreach (string l in lines)
+                {
+                    if (l.IndexOf(' ') != -1)
+                    {
+                        string oldTime = l.Substring(0, l.IndexOf(' '));
+                        TimeSpan parsedTime;
+
+                        if (oldTime.Length == 5)
+                            // Add 0 hour marker if necessary
+                            if (TimeSpan.TryParse("0:" + oldTime, CultureInfo.CurrentCulture, out parsedTime))
+                            {
+                                TimeSpan newTime = parsedTime + vodTime;
+
+                                if (newTime.TotalHours >= 1)
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                else
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                            }
+                            else
+                                // No timestamps found in this line, write it back as is
+                                File.AppendAllText(saveFileName, l + "\n");
+
+                        else if (oldTime.Length == 8)
+                            // If hours are already there, parse the time as is
+                            if (TimeSpan.TryParse(oldTime, CultureInfo.CurrentCulture, out parsedTime))
+                            {
+                                TimeSpan newTime = parsedTime + vodTime;
+
+                                if (newTime.TotalHours >= 1)
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                else
+                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                            }
+                            else
+                                // No timestamps found in this line, write it back as is
+                                File.AppendAllText(saveFileName, l + "\n");
+
+                    }
+                    else
+                        // No timestamps found in this line, write it back as is
+                        File.AppendAllText(saveFileName, l + "\n");
+                }
+            }
+        }
+
         private void hookToMelty()
         {
             // Change to opposite state
             _isLooping = !_isLooping;
+
             if (_isLooping)
             // Turning the hook loop on
             {
@@ -332,7 +450,7 @@ namespace OverlayControl
                                 Dispatcher.Invoke(() => cmbChar2.Text = "Random");
                                 Dispatcher.Invoke(() => cmbMoon1.Text = "Null");
                                 Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
-                                Dispatcher.Invoke(() => updateCutIns());
+                                Dispatcher.Invoke(() => updateVisuals());
 
                                 _scoreCurrent1 = 0;
                                 _scoreCurrent2 = 0;
@@ -391,7 +509,7 @@ namespace OverlayControl
                             else
                                 Dispatcher.Invoke(() => cmbMoon2.Text = "Null");
 
-                            Dispatcher.Invoke(() => updateCutIns());
+                            Dispatcher.Invoke(() => updateVisuals());
 
                             // If this is the first loop, make sure the score is caught up to the in-game one
                             // It can be manually edited after the fact if in-game score is not accurate to the set count
@@ -430,9 +548,8 @@ namespace OverlayControl
                             {
                                 lastIntroState = currentIntroState;
                                 if (lastIntroState == 1)
-                                    Dispatcher.Invoke(new Action(() => manageTimestamp()));
+                                    Dispatcher.Invoke(new Action(() => manageCurrentMatch()));
                             }
-
                         }
 
                         // Run this once per in-game frame 
@@ -449,7 +566,7 @@ namespace OverlayControl
             }
         }
 
-        private void manageTimestamp()
+        private void manageCurrentMatch()
         {
             // Check if there is currently a match being tracked
             if (CurrentMatch != null)
@@ -457,27 +574,7 @@ namespace OverlayControl
                 // If we have a new match, save previous match to file
                 if (CurrentMatch.IsNewMatch(Player1, Player2))
                 {
-                    // Check if file exists
-                    if (!File.Exists("./timestamps_" + Tournament + ".txt"))
-                        // If it doesn't, create file and save initial timestamp
-                        File.WriteAllText("./timestamps_" + Tournament + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
-
-                    try
-                    {
-                        // Get the first match's time
-                        long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + Tournament + ".txt").First());
-                        DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
-                        TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
-
-                        // Append current match with timestamp relative to first match of the tournament
-                        if (timestamp.TotalHours >= 1)
-                            File.AppendAllText("./timestamps_" + Tournament + ".txt",
-                                "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
-                        else
-                            File.AppendAllText("./timestamps_" + Tournament + ".txt",
-                                "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
-                    }
-                    catch { }
+                    saveCurrentMatchToFile();
 
                     // Create new match once the previous one is saved
                     CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
@@ -504,15 +601,43 @@ namespace OverlayControl
             }
             // If previous match is null, go ahead and create new match
             else
-                CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+            {
+
+            }
+            CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
         }
 
-        private void updateCutIns()
+
+        /// <summary>
+        /// Saves the current active Match to the tournament's timestamps file.
+        /// </summary>
+        /// <returns>If the match was successfully saved to the timestamps file.</returns>
+        private bool saveCurrentMatchToFile()
         {
-            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
-                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+            // Check if file exists
+            if (!File.Exists("./timestamps_" + Tournament + ".txt"))
+                // If it doesn't, create file and save initial timestamp
+                File.WriteAllText("./timestamps_" + Tournament + ".txt", CurrentMatch.StartTime.ToBinary().ToString());
+
+            try
+            {
+                // Get the first match's time
+                long firstMatchBin = long.Parse(File.ReadLines("./timestamps_" + Tournament + ".txt").First());
+                DateTime firstMatchTime = DateTime.FromBinary(firstMatchBin);
+                TimeSpan timestamp = CurrentMatch.StartTime - firstMatchTime;
+
+                // Append current match with timestamp relative to first match of the tournament
+                if (timestamp.TotalHours >= 1)
+                    File.AppendAllText("./timestamps_" + Tournament + ".txt",
+                        "\n" + timestamp.ToString(@"hh\:mm\:ss") + " " + CurrentMatch.ToString());
+                else
+                    File.AppendAllText("./timestamps_" + Tournament + ".txt",
+                        "\n" + timestamp.ToString(@"mm\:ss") + " " + CurrentMatch.ToString());
+
+                return true;
+            }
+            // If there was an error, there is no current match. Return false.
+            catch { return false; }
         }
 
         private void updateScores()
@@ -520,64 +645,18 @@ namespace OverlayControl
             File.WriteAllText("./score1.txt", this.txtScore1.Text);
             File.WriteAllText("./score2.txt", this.txtScore2.Text);
         }
-
-        private void finalizeTimestamps(TimeSpan vodTime, string saveFileName) =>
-            // Call overloaded method with default file name
-            finalizeTimestamps(vodTime, "./timestamps_" + Tournament + ".txt", saveFileName);
-
-
-        private void finalizeTimestamps(TimeSpan vodTime, string openFileName, string saveFileName)
+        private void updateVisuals()
         {
-            if (File.Exists(openFileName))
-            {
-                // Separate the lines
-                List<string> lines = File.ReadLines(openFileName).ToList();
-
-                foreach (string l in lines)
-                {
-                    if (l.IndexOf(' ') != -1)
-                    {
-                        string oldTime = l.Substring(0, l.IndexOf(' '));
-                        TimeSpan parsedTime;
-
-                        if (oldTime.Length == 5)
-                            // Add 0 hour marker if necessary
-                            if (TimeSpan.TryParse("0:" + oldTime, CultureInfo.CurrentCulture, out parsedTime))
-                            {
-                                TimeSpan newTime = parsedTime + vodTime;
-
-                                if (newTime.TotalHours >= 1)
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
-                                else
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
-                            }
-                            else
-                                // No timestamps found in this line, write it back as is
-                                File.AppendAllText(saveFileName, l + "\n");
-
-                        else if (oldTime.Length == 8)
-                            // If hours are already there, parse the time as is
-                            if (TimeSpan.TryParse(oldTime, CultureInfo.CurrentCulture, out parsedTime))
-                            {
-                                TimeSpan newTime = parsedTime + vodTime;
-
-                                if (newTime.TotalHours >= 1)
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
-                                else
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
-                            }
-                            else
-                                // No timestamps found in this line, write it back as is
-                                File.AppendAllText(saveFileName, l + "\n");
-
-                    }
-                    else
-                        // No timestamps found in this line, write it back as is
-                        File.AppendAllText(saveFileName, l + "\n");
-                }
-            }
+            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
+                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
         }
 
+
+
         #endregion
+
+
     }
 }
