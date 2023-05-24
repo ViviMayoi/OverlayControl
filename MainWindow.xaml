@@ -1,23 +1,29 @@
 ﻿<Window x:Class="OverlayControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OverlayControl"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Closing="mainWindow_Closing" x:Name="mainWindow" Title="OverlayControl" SizeToContent="WidthAndHeight"
         ResizeMode="CanMinimize" Height="286" Width="667" >
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ItemsPanelTemplate x:Key="ItemsPanelNoIconArea">
+                <StackPanel Margin="-20,0,0,0" Background="White"/>
+            </ItemsPanelTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid>
         <Menu HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="660">
-            <MenuItem Header="Timestamps">
+            <MenuItem Header="Timestamps" ItemsPanel="{StaticResource ItemsPanelNoIconArea}">
                 <MenuItem x:Name="mnuSaveCurrentMatch" Header="Save current match to file" Click="mnuSaveCurrentMatch_Click" IsEnabled="False"/>
                 <Separator></Separator>
                 <MenuItem x:Name="mnuFinalizeCurrent" Header="Finalize current tournament's timestamps" Click="mnuFinalizeCurrent_Click"/>
-                <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click"/>
+                <MenuItem x:Name="mnuBrowseTimestamps" Header="Open timestamps to finalize..." Click="mnuBrowseTimestamps_Click" />
             </MenuItem>
-            <MenuItem Header="Preferences">
-                <MenuItem x:Name="mnuResetScores" Header="Reset scores on game close" IsCheckable="True"/>
-                <MenuItem x:Name="mnuCatchScoreUp" Header="Catch score up when initially hooking to game" IsCheckable="True"/>
+            <MenuItem Header="Settings">
+                <MenuItem x:Name="mnuResetScores" Header="Reset scores on game close" IsCheckable="True" IsChecked="True" Checked="mnuResetScores_Checked" Unchecked="mnuResetScores_Unchecked"/>
+                <MenuItem x:Name="mnuCatchScoresUp" Header="Catch scores up when initially hooking to game" IsCheckable="True" IsChecked="True" 
+                          Checked="mnuCatchScoresUp_Checked" Unchecked="mnuCatchScoresUp_Unchecked"/>
             </MenuItem>
         </Menu>
 

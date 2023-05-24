@@ -105,6 +105,7 @@ namespace OverlayControl
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood _hook = new MeltyBlood();
         private Match _currentMatch = null;
+        private Settings _settings = null;
 
         private bool _isLooping = false;
         private int _scoreCurrent1 = 0;
@@ -119,21 +120,34 @@ namespace OverlayControl
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();
+            _settings = Settings.Instance;
+            InitializeComponent();
 
             // Initialize sources
-            this.cmbChar1.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
-            this.cmbChar2.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
-            this.cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
-            this.cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
-            this.cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
-            this.cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
+            cmbChar1.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
+            cmbChar2.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
+            cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
+            cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
+            cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
+            cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
+
+            // Load settings
+            _settings = Settings.Instance;
+            _settings.Load("config.xml");
+            mnuResetScores.IsChecked = _settings.ResetScores;
+            mnuCatchScoresUp.IsChecked = _settings.CatchScoresUp;
+
+            // Mark settings as loaded
+            _settings.AreLoaded = true;
+
+            // Load current items
+            // TBD
         }
 
         /// <summary>
-        /// Cancelable event invoked when attempting to close the application's main window.
+        /// Cancelable event fired when attempting to close the application's main window.
         /// </summary>
-        /// <param name="sender">The control that was used to invoke this event.</param>
+        /// <param name="sender">The control that was used to fire this event.</param>
         /// <param name="e">Provides data for the cancelable event.</param>
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -159,9 +173,9 @@ namespace OverlayControl
 
         #region Buttons
         /// <summary>
-        /// Event invoked when button btnShowImages is clicked.
+        /// Event fired when button btnShowImages is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnShowImages_Click(object sender, RoutedEventArgs e)
         {
@@ -180,9 +194,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when button btnUpdateOverlay is clicked.
+        /// Event fired when button btnUpdateOverlay is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnUpdateOverlay_Click(object sender, RoutedEventArgs e)
         {
@@ -205,9 +219,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when button btnSwapPlayers is clicked.
+        /// Event fired when button btnSwapPlayers is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
         {
@@ -241,9 +255,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when button btnResetScores is clicked.
+        /// Event fired when button btnResetScores is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnResetScores_Click(object sender, RoutedEventArgs e)
         {
@@ -252,25 +266,26 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when button btnHookToMBAACC is clicked.
+        /// Event fired when button btnHookToMBAACC is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnHookToMBAACC_Click(object sender, RoutedEventArgs e) => hookToMelty();
 
         /// <summary>
-        /// Event invoked when button btnSwitchProcess is clicked.
+        /// Event fired when button btnSwitchProcess is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void btnSwitchProcess_Click(object sender, RoutedEventArgs e) => _hook.SwapActiveProcess();
         #endregion
 
         #region Context menu items
+        #region Timestamps
         /// <summary>
-        /// Event invoked when context menu item mnuSaveCurrentMatch is clicked.
+        /// Event fired when context menu item mnuSaveCurrentMatch is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The control that fired this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void mnuSaveCurrentMatch_Click(object sender, RoutedEventArgs e)
         {
@@ -285,9 +300,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when context menu item mnuFinalizeCurrent is clicked.
+        /// Event fired when context menu item mnuFinalizeCurrent is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void mnuFinalizeCurrent_Click(object sender, RoutedEventArgs e)
         {
@@ -322,9 +337,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when context menu item mnuBrowseTimestamps is clicked.
+        /// Event fired when context menu item mnuBrowseTimestamps is clicked.
         /// </summary>
-        /// <param name="sender">The button that was pressed to invoke this event.</param>
+        /// <param name="sender">The button that was pressed to fire this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void mnuBrowseTimestamps_Click(object sender, RoutedEventArgs e)
         {
@@ -367,21 +382,72 @@ namespace OverlayControl
         }
         #endregion
 
+        #region Settings
+        /// <summary>
+        /// Event fired when context menu item mnuResetScores is checked.
+        /// </summary>
+        /// <param name="sender">The control that fired this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
+        private void mnuResetScores_Checked(object sender, RoutedEventArgs e)
+        {
+            // Avoid saving settings that were just loaded in
+            if (_settings.AreLoaded)
+                _settings.ResetScores = true;
+        }
+
+        /// <summary>
+        /// Event fired when context menu item mnuResetScores is unchecked.
+        /// </summary>
+        /// <param name="sender">The control that fired this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
+        private void mnuResetScores_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Avoid saving settings that were just loaded in
+            if (_settings.AreLoaded)
+                _settings.ResetScores = false;
+        }
+
+        /// <summary>
+        /// Event fired when context menu item mnuCatchScoresUp is checked.
+        /// </summary>
+        /// <param name="sender">The control that fired this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
+        private void mnuCatchScoresUp_Checked(object sender, RoutedEventArgs e)
+        {
+            // Avoid saving settings that were just loaded in
+            if (_settings.AreLoaded)
+                _settings.CatchScoresUp = true;
+        }
+
+        /// <summary>
+        /// Event fired when context menu item mnuCatchScoresUp is unchecked.
+        /// </summary>
+        /// <param name="sender">The control that fired this event.</param>
+        /// <param name="e">Contains state information and event data.</param>
+        private void mnuCatchScoresUp_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Avoid saving settings that were just loaded in
+            if (_settings.AreLoaded)
+                _settings.CatchScoresUp = false;
+        }
+        #endregion
+        #endregion
+
         #region Text Boxes
         // Only allow numbers in score and match count text boxes
 
         /// <summary>
-        /// Event invoked when a text box that should only contain numbers is typed into.
+        /// Event fired when a text box that should only contain numbers is typed into.
         /// </summary>
-        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="sender">The text box that fired this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e) =>
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
 
         /// <summary>
-        /// Event invoked when a text box that should only contain numbers is pasted into.
+        /// Event fired when a text box that should only contain numbers is pasted into.
         /// </summary>
-        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="sender">The text box that fired this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_Pasting(object sender, DataObjectPastingEventArgs e)
         {
@@ -398,9 +464,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Event invoked when a text box that should only contain numbers has data dragged down into it via mouse.
+        /// Event fired when a text box that should only contain numbers has data dragged down into it via mouse.
         /// </summary>
-        /// <param name="sender">The text box that invoked this event.</param>
+        /// <param name="sender">The text box that fired this event.</param>
         /// <param name="e">Contains state information and event data.</param>
         private void txtNumber_PreviewDragEnter(object sender, DragEventArgs e)
         {
@@ -733,11 +799,6 @@ namespace OverlayControl
                     new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
                     new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
         }
-
-
-
         #endregion
-
-
     }
 }

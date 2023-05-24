@@ -66,9 +66,9 @@ namespace OverlayControl
         }
 
         /// <summary>
-        /// Cancelable event invoked when attempting to close the window containing the stream overlay visuals.
+        /// Cancelable event fired when attempting to close the window containing the stream overlay visuals.
         /// </summary>
-        /// <param name="sender">The control that was used to invoke this event.</param>
+        /// <param name="sender">The control that was used to fire this event.</param>
         /// <param name="e">Provides data for the cancelable event.</param>
         private void wndVisuals_Closing(object sender, CancelEventArgs e)
         {
