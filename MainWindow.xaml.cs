@@ -140,8 +140,25 @@ namespace OverlayControl
             // Mark settings as loaded
             _settings.AreLoaded = true;
 
-            // Load current items
-            // TBD
+            // Load previously entered information
+            txtCommentary.Text = File.ReadAllText("commentary.txt").Trim();
+            txtPlayer1.Text = File.ReadAllText("player1.txt").Trim();
+            txtPlayer2.Text = File.ReadAllText("player2.txt").Trim();
+            txtPronouns1.Text = File.ReadAllText("pronouns1.txt").Trim();
+            txtPronouns2.Text = File.ReadAllText("pronouns2.txt").Trim();
+            txtRound.Text = File.ReadAllText("round.txt").Trim();
+            txtScore1.Text = File.ReadAllText("score1.txt").Trim();
+            txtScore2.Text = File.ReadAllText("score2.txt").Trim();
+            txtSponsor1.Text = File.ReadAllText("sponsor1.txt").Trim();
+            txtSponsor2.Text = File.ReadAllText("sponsor2.txt").Trim();
+            txtTournament.Text = File.ReadAllText("tournament.txt").Trim();
+
+            chkLosersSide1.IsChecked = File.ReadAllText("player1_grands.txt").EndsWith("[L]");
+            chkLosersSide2.IsChecked = File.ReadAllText("player2_grands.txt").EndsWith("[L]");
+
+            string matchCount = File.ReadAllText("matchcount.txt");
+            txtMatchCount.Text = matchCount.Substring(matchCount.LastIndexOf(' ') + 1);
+            cmbMatchCount.Text = matchCount.Substring(0, matchCount.LastIndexOf(' '));
         }
 
         /// <summary>
