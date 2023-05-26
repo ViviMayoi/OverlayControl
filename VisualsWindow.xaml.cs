@@ -22,15 +22,15 @@ namespace OverlayControl
         /// <param name="flag02">Image representing player 2's country flag.</param>
         public VisualsWindow(BitmapImage cutIn01, BitmapImage moon01, BitmapImage cutIn02, BitmapImage moon02, BitmapImage flag01, BitmapImage flag02)
         {
-            this.InitializeComponent();
-            this.Height = 768.0;
-            this.Width = 1024.0;
-            this.imgCutIn1.Source = (ImageSource)cutIn01;
-            this.imgMoon1.Source = (ImageSource)moon01;
-            this.imgFlag1.Source = (ImageSource)flag01;
-            this.imgCutIn2.Source = (ImageSource)cutIn02;
-            this.imgMoon2.Source = (ImageSource)moon02;
-            this.imgFlag2.Source = (ImageSource)flag02;
+            InitializeComponent();
+            Height = 768.0;
+            Width = 1024.0;
+            imgCutIn1.Source = (ImageSource)cutIn01;
+            imgMoon1.Source = (ImageSource)moon01;
+            imgFlag1.Source = (ImageSource)flag01;
+            imgCutIn2.Source = (ImageSource)cutIn02;
+            imgMoon2.Source = (ImageSource)moon02;
+            imgFlag2.Source = (ImageSource)flag02;
         }
 
         /// <summary>
@@ -47,16 +47,16 @@ namespace OverlayControl
         {
             try
             {
-                this.imgCutIn1.Source = (ImageSource)cutIn01;
-                this.imgMoon1.Source = (ImageSource)moon01;
-                this.imgFlag1.Source = (ImageSource)flag01;
-                this.imgFlag1.Stretch = Stretch.Uniform;
-                this.imgFlag1.HorizontalAlignment = HorizontalAlignment.Center;
-                this.imgCutIn2.Source = (ImageSource)cutIn02;
-                this.imgMoon2.Source = (ImageSource)moon02;
-                this.imgFlag2.Source = (ImageSource)flag02;
-                this.imgFlag2.Stretch = Stretch.Uniform;
-                this.imgFlag2.HorizontalAlignment = HorizontalAlignment.Center;
+                imgCutIn1.Source = (ImageSource)cutIn01;
+                imgMoon1.Source = (ImageSource)moon01;
+                imgFlag1.Source = (ImageSource)flag01;
+                imgFlag1.Stretch = Stretch.Uniform;
+                imgFlag1.HorizontalAlignment = HorizontalAlignment.Center;
+                imgCutIn2.Source = (ImageSource)cutIn02;
+                imgMoon2.Source = (ImageSource)moon02;
+                imgFlag2.Source = (ImageSource)flag02;
+                imgFlag2.Stretch = Stretch.Uniform;
+                imgFlag2.HorizontalAlignment = HorizontalAlignment.Center;
                 return true;
             }
             catch

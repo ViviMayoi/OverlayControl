@@ -43,9 +43,9 @@ namespace OverlayControl
         /// <returns>Whether or not the match contains different players.</returns>
         public bool IsNewMatch(string p1, string p2)
         {
-            if (p1 == this.Player1 && p2 == this.Player2)
+            if (p1 == Player1 && p2 == Player2)
                 return false;
-            return !(p2 == this.Player1) || !(p1 == this.Player2);
+            return !(p2 == Player1) || !(p1 == Player2);
         }
 
         /// <summary>
@@ -73,40 +73,40 @@ namespace OverlayControl
         public override string ToString()
         {
             // Construct a string, starting with round and first player
-            string str1 = this.Round + " - " + this.Player1;
+            string str1 = Round + " - " + Player1;
 
             // Check P1's character count
-            if (this.Characters1.Count == 1)
+            if (Characters1.Count == 1)
                 // Close parenthesis immediately if only one character was played
-                str1 = str1 + " (" + this.Characters1[0] + ")";
-            else if (this.Characters1.Count != 0)
+                str1 = str1 + " (" + Characters1[0] + ")";
+            else if (Characters1.Count != 0)
             {
                 // If multiple characters were played, format appropriately
                 string str2 = str1 + " (";
-                for (int index = 0; index < this.Characters1.Count; ++index)
+                for (int index = 0; index < Characters1.Count; ++index)
                 {
-                    str2 += this.Characters1[index];
-                    if (index != this.Characters1.Count - 1)
+                    str2 += Characters1[index];
+                    if (index != Characters1.Count - 1)
                         str2 += ", ";
                 }
                 str1 = str2 + ")";
             }
 
             // Add the second player
-            string str3 = str1 + " vs " + this.Player2;
+            string str3 = str1 + " vs " + Player2;
 
             // Check P2's character count
-            if (this.Characters2.Count == 1)
+            if (Characters2.Count == 1)
                 // Close parenthesis immediately if only one character was played
-                str3 = str3 + " (" + this.Characters2[0] + ")";
-            else if (this.Characters2.Count != 0)
+                str3 = str3 + " (" + Characters2[0] + ")";
+            else if (Characters2.Count != 0)
             {
                 // If multiple characters were played, format appropriately
                 string str2 = str3 + " (";
-                for (int index = 0; index < this.Characters2.Count; ++index)
+                for (int index = 0; index < Characters2.Count; ++index)
                 {
-                    str2 += this.Characters2[index];
-                    if (index != this.Characters2.Count - 1)
+                    str2 += Characters2[index];
+                    if (index != Characters2.Count - 1)
                         str2 += ", ";
                 }
                 str3 = str2 + ")";

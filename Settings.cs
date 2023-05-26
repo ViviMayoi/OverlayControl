@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace OverlayControl
@@ -18,7 +14,7 @@ namespace OverlayControl
         private static readonly Lazy<Settings> _lazy =
             new Lazy<Settings>(() => new Settings());
 
-        private XmlDocument _file = new XmlDocument();
+        private readonly XmlDocument _file = new XmlDocument();
         private string _fileLocation;
 
         private bool _resetScores = true;

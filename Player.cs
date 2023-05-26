@@ -3,8 +3,8 @@
     /// <summary>
     /// Struct representing a player participating in a Match.
     /// </summary>
-  public struct Player
-  {
+    public struct Player
+    {
         #region Properties
         public string Tag { get; set; }
 

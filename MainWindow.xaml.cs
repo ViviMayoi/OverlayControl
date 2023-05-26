@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MeltyHook;
+using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,8 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using MeltyHook;
-using Microsoft.Win32;
 
 namespace OverlayControl
 {
@@ -105,7 +105,7 @@ namespace OverlayControl
             new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)), new BitmapImage(new Uri("flags/_null.png", UriKind.Relative)));
         private readonly MeltyBlood _hook = new MeltyBlood();
         private Match _currentMatch = null;
-        private Settings _settings = null;
+        private readonly Settings _settings = null;
 
         private bool _isLooping = false;
         private int _scoreCurrent1 = 0;
@@ -126,8 +126,8 @@ namespace OverlayControl
             // Initialize sources
             cmbChar1.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
             cmbChar2.ItemsSource = _hook.CharacterNames[2].Where(c => c != null).OrderBy(c => c);
-            cmbMoon1.ItemsSource = (IEnumerable)MainWindow.Moons;
-            cmbMoon2.ItemsSource = (IEnumerable)MainWindow.Moons;
+            cmbMoon1.ItemsSource = (IEnumerable)Moons;
+            cmbMoon2.ItemsSource = (IEnumerable)Moons;
             cmbCountry1.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
             cmbCountry2.ItemsSource = (Player.Countries[])Enum.GetValues(typeof(Player.Countries));
 
@@ -198,12 +198,12 @@ namespace OverlayControl
         {
             // Update images
             if (cmbChar1.Text != "")
-                _visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+                _visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + cmbMoon1.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("cutins/" + cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + cmbMoon2.Text + ".png", UriKind.Relative)),
+    new BitmapImage(new Uri("flags/" + cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + cmbCountry2.Text + ".png", UriKind.Relative)));
 
             // Return if images are already visible
-            if (this._visuals.IsVisible)
+            if (_visuals.IsVisible)
                 return;
 
 
@@ -242,33 +242,33 @@ namespace OverlayControl
         /// <param name="e">Contains state information and event data.</param>
         private void btnSwapPlayers_Click(object sender, RoutedEventArgs e)
         {
-            string sponsor = this.txtSponsor1.Text;
-            this.txtSponsor1.Text = this.txtSponsor2.Text;
-            this.txtSponsor2.Text = sponsor;
+            string sponsor = txtSponsor1.Text;
+            txtSponsor1.Text = txtSponsor2.Text;
+            txtSponsor2.Text = sponsor;
 
-            string name = this.txtPlayer1.Text;
-            this.txtPlayer1.Text = this.txtPlayer2.Text;
-            this.txtPlayer2.Text = name;
+            string name = txtPlayer1.Text;
+            txtPlayer1.Text = txtPlayer2.Text;
+            txtPlayer2.Text = name;
 
-            object selectedChar = this.cmbChar1.SelectedItem;
-            this.cmbChar1.SelectedItem = this.cmbChar2.SelectedItem;
-            this.cmbChar2.SelectedItem = selectedChar;
+            object selectedChar = cmbChar1.SelectedItem;
+            cmbChar1.SelectedItem = cmbChar2.SelectedItem;
+            cmbChar2.SelectedItem = selectedChar;
 
-            object selectedMoon = this.cmbMoon1.SelectedItem;
-            this.cmbMoon1.SelectedItem = this.cmbMoon2.SelectedItem;
-            this.cmbMoon2.SelectedItem = selectedMoon;
+            object selectedMoon = cmbMoon1.SelectedItem;
+            cmbMoon1.SelectedItem = cmbMoon2.SelectedItem;
+            cmbMoon2.SelectedItem = selectedMoon;
 
-            string score = this.txtScore1.Text;
-            this.txtScore1.Text = this.txtScore2.Text;
-            this.txtScore2.Text = score;
+            string score = txtScore1.Text;
+            txtScore1.Text = txtScore2.Text;
+            txtScore2.Text = score;
 
-            string pronouns = this.txtPronouns1.Text;
-            this.txtPronouns1.Text = this.txtPronouns2.Text;
-            this.txtPronouns2.Text = pronouns;
+            string pronouns = txtPronouns1.Text;
+            txtPronouns1.Text = txtPronouns2.Text;
+            txtPronouns2.Text = pronouns;
 
-            object country = this.cmbCountry1.SelectedItem;
-            this.cmbCountry1.SelectedItem = this.cmbCountry2.SelectedItem;
-            this.cmbCountry2.SelectedItem = country;
+            object country = cmbCountry1.SelectedItem;
+            cmbCountry1.SelectedItem = cmbCountry2.SelectedItem;
+            cmbCountry2.SelectedItem = country;
         }
 
         /// <summary>
@@ -811,10 +811,10 @@ namespace OverlayControl
         /// </summary>
         private void updateVisuals()
         {
-            if (this.cmbChar1.Text != "" && this.cmbChar2.Text != "")
-                this._visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + this.cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon1.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("cutins/" + this.cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + this.cmbMoon2.Text + ".png", UriKind.Relative)),
-                    new BitmapImage(new Uri("flags/" + this.cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + this.cmbCountry2.Text + ".png", UriKind.Relative)));
+            if (cmbChar1.Text != "" && cmbChar2.Text != "")
+                _visuals.ChangeSource(new BitmapImage(new Uri("cutins/" + cmbChar1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + cmbMoon1.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("cutins/" + cmbChar2.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("moons/" + cmbMoon2.Text + ".png", UriKind.Relative)),
+                    new BitmapImage(new Uri("flags/" + cmbCountry1.Text + ".png", UriKind.Relative)), new BitmapImage(new Uri("flags/" + cmbCountry2.Text + ".png", UriKind.Relative)));
         }
         #endregion
     }
