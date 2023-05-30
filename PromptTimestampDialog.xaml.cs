@@ -9,7 +9,7 @@ namespace OverlayControl
     /// </summary>
     public partial class PromptTimestampDialog : Window
     {
-        public string GivenTime { get => txtHours.Text + ":" + txtMinutes.Text + ":" + txtSeconds.Text; }
+        public TimeSpan GivenTime { get => new TimeSpan(int.Parse(txtHours.Text), int.Parse(txtMinutes.Text), int.Parse(txtSeconds.Text)); }
 
         /// <summary>
         /// Constructor for the PromptTimestampDialog window, acting as a prompt for the user to enter a timestamp.

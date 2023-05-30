@@ -339,16 +339,15 @@ namespace OverlayControl
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     // Parse the time and save new file
-                    if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out TimeSpan parsedTime))
-                        finalizeTimestamps(parsedTime, saveFileDialog.FileName);
-
-                    // Add 0 hour marker if necessary
-                    else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
-                        finalizeTimestamps(parsedTime, saveFileDialog.FileName);
-                    else
-                        MessageBox.Show("Error: ");
-                    MessageBox.Show("The inputted time was not in a valid format. Please enter the timestamp using the \"hh:mm:ss\" format.",
-                        "Error trying to read timestamp", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    try
+                    {
+                        finalizeTimestamps(prompt.GivenTime, saveFileDialog.FileName);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("The inputted time was not in a valid format. Please double-check the entered time.",
+                            "Error trying to read timestamp", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -385,14 +384,15 @@ namespace OverlayControl
                     if (saveFileDialog.ShowDialog() == true)
                     {
                         // Parse the time and save new file
-                        if (TimeSpan.TryParse(prompt.GivenTime, CultureInfo.CurrentCulture, out TimeSpan parsedTime))
-                            finalizeTimestamps(parsedTime, openFileDialog.FileName, saveFileDialog.FileName);
-                        // Add 0 hour marker if necessary
-                        else if (TimeSpan.TryParse("0:" + prompt.GivenTime, CultureInfo.CurrentCulture, out parsedTime))
-                            finalizeTimestamps(parsedTime, openFileDialog.FileName, saveFileDialog.FileName);
-                        else
-                            MessageBox.Show("The inputted time was not in a valid format. Please enter the timestamp using the \"hh:mm:ss\" format.",
+                        try
+                        {
+                            finalizeTimestamps(prompt.GivenTime, openFileDialog.FileName, saveFileDialog.FileName);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("The inputted time was not in a valid format. Please double-check the entered time.",
                                 "Error trying to read timestamp", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        }
                     }
                 }
             }
@@ -522,6 +522,7 @@ namespace OverlayControl
             {
                 // Separate the lines
                 List<string> lines = File.ReadLines(openFileName).ToList();
+                string saveFileContents = "";
 
                 foreach (string l in lines)
                 {
@@ -537,13 +538,15 @@ namespace OverlayControl
                                 TimeSpan newTime = parsedTime + vodTime;
 
                                 if (newTime.TotalHours >= 1)
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    saveFileContents += decimal.Truncate((decimal)newTime.TotalHours).ToString("00") + ":" + 
+                                        newTime.Minutes.ToString("00") + ":" + 
+                                        newTime.Seconds.ToString("00") + l.Substring(l.IndexOf(' ')) + "\n";
                                 else
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    saveFileContents += newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n";
                             }
                             else
                                 // No timestamps found in this line, write it back as is
-                                File.AppendAllText(saveFileName, l + "\n");
+                                saveFileContents += l + "\n";
 
                         else if (oldTime.Length == 8)
                             // If hours are already there, parse the time as is
@@ -552,19 +555,22 @@ namespace OverlayControl
                                 TimeSpan newTime = parsedTime + vodTime;
 
                                 if (newTime.TotalHours >= 1)
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"hh\:mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    saveFileContents += decimal.Truncate((decimal)newTime.TotalHours).ToString("00") + ":" +
+                                        newTime.Minutes.ToString("00") + ":" +
+                                        newTime.Seconds.ToString("00") + l.Substring(l.IndexOf(' ')) + "\n";
                                 else
-                                    File.AppendAllText(saveFileName, newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n");
+                                    saveFileContents += newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n";
                             }
                             else
                                 // No timestamps found in this line, write it back as is
-                                File.AppendAllText(saveFileName, l + "\n");
-
+                                saveFileContents += l + "\n";
                     }
                     else
                         // No timestamps found in this line, write it back as is
-                        File.AppendAllText(saveFileName, l + "\n");
+                        saveFileContents += l + "\n";
                 }
+                // Save the file
+                File.WriteAllText(saveFileName, saveFileContents);
             }
         }
 

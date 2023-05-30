@@ -19,11 +19,11 @@
         <Label Name="lblVodTime" Grid.Column="1">Enter the start time of the first match on the VOD.</Label>
 
         <TextBox Name="txtHours" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="10,0,213,0" TabIndex="1" 
-                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter" Text="0"/>
         <TextBox x:Name="txtMinutes" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="77,0,146,0" TabIndex="2"
-                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter" Text="0"/>
         <TextBox x:Name="txtSeconds" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="147,0,76,0" TabIndex="3"
-                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter" Text="0"/>
 
         <Label x:Name="lblHours" Content="h" Grid.Column="1" HorizontalAlignment="Left" Margin="60,22,0,0" VerticalAlignment="Top" Grid.RowSpan="3"/>
         <Label x:Name="lblMinutes" Content="m" Grid.Column="1" HorizontalAlignment="Left" Margin="127,22,0,0" VerticalAlignment="Top" Grid.RowSpan="3"/>
