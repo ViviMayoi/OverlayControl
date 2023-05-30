@@ -17,11 +17,20 @@
         </Grid.RowDefinitions>
 
         <Label Name="lblVodTime" Grid.Column="1">Enter the start time of the first match on the VOD.</Label>
-        <TextBox Name="txtVodTime" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="10,0,10,0"></TextBox>
 
+        <TextBox Name="txtHours" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="10,0,213,0" TabIndex="1" 
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+        <TextBox x:Name="txtMinutes" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="77,0,146,0" TabIndex="2"
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+        <TextBox x:Name="txtSeconds" Grid.Column="1" Grid.Row="1" MinWidth="40" Margin="147,0,76,0" TabIndex="3"
+                 PreviewTextInput="txtNumber_PreviewTextInput" DataObject.Pasting="txtNumber_Pasting" PreviewDragEnter="txtNumber_PreviewDragEnter"/>
+
+        <Label x:Name="lblHours" Content="h" Grid.Column="1" HorizontalAlignment="Left" Margin="60,22,0,0" VerticalAlignment="Top" Grid.RowSpan="3"/>
+        <Label x:Name="lblMinutes" Content="m" Grid.Column="1" HorizontalAlignment="Left" Margin="127,22,0,0" VerticalAlignment="Top" Grid.RowSpan="3"/>
+        <Label x:Name="lblSeconds" Content="s" Grid.Column="1" HorizontalAlignment="Left" Margin="197,22,0,0" VerticalAlignment="Top" Grid.RowSpan="3"/>
         <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,10,0,10">
             <Button Name="btnCancel" IsCancel="True" MinWidth="60" Margin="0,0,10,0">Cancel</Button>
-            <Button Name="btnFinalize" IsDefault="True" Click="btnFinalize_Click" MinWidth="60" Margin="0,0,10,0">Finalize</Button>
+            <Button Name="btnFinalize" IsDefault="True" Click="btnFinalize_Click" MinWidth="60" Margin="0,0,10,0" TabIndex="4">Finalize</Button>
         </WrapPanel>
     </Grid>
 </Window>
