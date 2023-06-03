@@ -766,9 +766,9 @@ namespace OverlayControl
             // If previous match is null, go ahead and create new match
             else
             {
-
+                CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
             }
-            CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
+            
         }
 
         /// <summary>
