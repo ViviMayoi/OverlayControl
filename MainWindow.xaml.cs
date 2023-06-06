@@ -141,24 +141,41 @@ namespace OverlayControl
             _settings.AreLoaded = true;
 
             // Load previously entered information
-            txtCommentary.Text = File.ReadAllText("commentary.txt").Trim();
-            txtPlayer1.Text = File.ReadAllText("player1.txt").Trim();
-            txtPlayer2.Text = File.ReadAllText("player2.txt").Trim();
-            txtPronouns1.Text = File.ReadAllText("pronouns1.txt").Trim();
-            txtPronouns2.Text = File.ReadAllText("pronouns2.txt").Trim();
-            txtRound.Text = File.ReadAllText("round.txt").Trim();
-            txtScore1.Text = File.ReadAllText("score1.txt").Trim();
-            txtScore2.Text = File.ReadAllText("score2.txt").Trim();
-            txtSponsor1.Text = File.ReadAllText("sponsor1.txt").Trim();
-            txtSponsor2.Text = File.ReadAllText("sponsor2.txt").Trim();
-            txtTournament.Text = File.ReadAllText("tournament.txt").Trim();
 
-            chkLosersSide1.IsChecked = File.ReadAllText("player1_grands.txt").EndsWith("[L]");
-            chkLosersSide2.IsChecked = File.ReadAllText("player2_grands.txt").EndsWith("[L]");
+            if (File.Exists("commentary.txt"))
+                txtCommentary.Text = File.ReadAllText("commentary.txt").Trim();
+            if (File.Exists("player1.txt"))
+                txtPlayer1.Text = File.ReadAllText("player1.txt").Trim();
+            if (File.Exists("player2.txt"))
+                txtPlayer2.Text = File.ReadAllText("player2.txt").Trim();
+            if (File.Exists("pronouns1.txt"))
+                txtPronouns1.Text = File.ReadAllText("pronouns1.txt").Trim();
+            if (File.Exists("pronouns2.txt"))
+                txtPronouns2.Text = File.ReadAllText("pronouns2.txt").Trim();
+            if (File.Exists("round.txt"))
+                txtRound.Text = File.ReadAllText("round.txt").Trim();
+            if (File.Exists("score1.txt"))
+                txtScore1.Text = File.ReadAllText("score1.txt").Trim();
+            if (File.Exists("score2.txt"))
+                txtScore2.Text = File.ReadAllText("score2.txt").Trim();
+            if (File.Exists("sponsor1.txt"))
+                txtSponsor1.Text = File.ReadAllText("sponsor1.txt").Trim();
+            if (File.Exists("sponsor2.txt"))
+                txtSponsor2.Text = File.ReadAllText("sponsor2.txt").Trim();
+            if (File.Exists("tournament.txt"))
+                txtTournament.Text = File.ReadAllText("tournament.txt").Trim();
 
-            string matchCount = File.ReadAllText("matchcount.txt");
-            txtMatchCount.Text = matchCount.Substring(matchCount.LastIndexOf(' ') + 1);
-            cmbMatchCount.Text = matchCount.Substring(0, matchCount.LastIndexOf(' '));
+            if (File.Exists("player1_grands.txt"))
+                chkLosersSide1.IsChecked = File.ReadAllText("player1_grands.txt").EndsWith("[L]");
+            if (File.Exists("player2_grands.txt"))
+                chkLosersSide2.IsChecked = File.ReadAllText("player2_grands.txt").EndsWith("[L]");
+
+            if (File.Exists("matchcount.txt"))
+            {
+                string matchCount = File.ReadAllText("matchcount.txt");
+                txtMatchCount.Text = matchCount.Substring(matchCount.LastIndexOf(' ') + 1);
+                cmbMatchCount.Text = matchCount.Substring(0, matchCount.LastIndexOf(' '));
+            }
         }
 
         /// <summary>
@@ -538,8 +555,8 @@ namespace OverlayControl
                                 TimeSpan newTime = parsedTime + vodTime;
 
                                 if (newTime.TotalHours >= 1)
-                                    saveFileContents += decimal.Truncate((decimal)newTime.TotalHours).ToString("00") + ":" + 
-                                        newTime.Minutes.ToString("00") + ":" + 
+                                    saveFileContents += decimal.Truncate((decimal)newTime.TotalHours).ToString("00") + ":" +
+                                        newTime.Minutes.ToString("00") + ":" +
                                         newTime.Seconds.ToString("00") + l.Substring(l.IndexOf(' ')) + "\n";
                                 else
                                     saveFileContents += newTime.ToString(@"mm\:ss") + l.Substring(l.IndexOf(' ')) + "\n";
@@ -768,7 +785,7 @@ namespace OverlayControl
             {
                 CurrentMatch = new Match(Player1, Player2, Character1, Character2, Round);
             }
-            
+
         }
 
         /// <summary>
