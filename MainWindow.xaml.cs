@@ -286,6 +286,10 @@ namespace OverlayControl
             object country = cmbCountry1.SelectedItem;
             cmbCountry1.SelectedItem = cmbCountry2.SelectedItem;
             cmbCountry2.SelectedItem = country;
+
+            bool? inLosers = chkLosersSide1.IsChecked;
+            chkLosersSide1.IsChecked = chkLosersSide2.IsChecked;
+            chkLosersSide2.IsChecked = inLosers;
         }
 
         /// <summary>
